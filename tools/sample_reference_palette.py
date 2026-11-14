@@ -13,7 +13,7 @@ from PIL import Image
 
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('image', type=Path)
-parser.add_argument('--output', type=Path, default=Path('research/unifi-dark-palette.json'))
+parser.add_argument('--output', type=Path, default=Path('tests/fixtures/reference/unifi-dark-palette.json'))
 args = parser.parse_args()
 im = Image.open(args.image).convert('RGB')
 if im.size != (3104, 2046):

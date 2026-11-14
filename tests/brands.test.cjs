@@ -61,7 +61,7 @@ test('every named brand has an SVG or letter and source provenance is pinned', (
     assert.ok(brand.letter || brand.paths.length);
     for (const p of brand.paths || []) assert.match(p, /^[MmZzLlHhVvCcSsQqTtAaEe0-9.,+\s-]+$/);
   }
-  const sources = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../research/brand-data-sources.json'), 'utf8'));
+  const sources = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../tools/brand-data-sources.json'), 'utf8'));
   assert.ok(sources['https://standards-oui.ieee.org/oui/oui.csv']);
   for (const item of Object.values(sources)) assert.match(item.sha256, /^[0-9a-f]{64}$/);
 });

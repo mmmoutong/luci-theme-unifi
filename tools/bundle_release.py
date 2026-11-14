@@ -2,9 +2,10 @@
 """Archive the committed public source tree without local captures or build output."""
 from pathlib import Path
 import hashlib
-import re
 import subprocess
 import zipfile
+
+from version import resolve_version
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'artifacts'
@@ -22,11 +23,10 @@ def main():
     revision = git('rev-parse', '--verify', 'HEAD').decode().strip()
     if git('status', '--porcelain', '--untracked-files=normal'):
         raise SystemExit('Commit or set aside pending public changes before bundling a release.')
-    makefile = git('show', revision + ':Makefile').decode()
-    version = re.search(r'^PKG_VERSION:=(.+)$', makefile, re.M).group(1).strip()
+    version = resolve_version()['version']
     OUT.mkdir(exist_ok=True)
-    archive = OUT / f'unifi-openwrt-{version}.zip'
-    git('archive', '--format=zip', f'--prefix=unifi-openwrt-{version}/',
+    archive = OUT / f'luci-theme-unifi-{version}.zip'
+    git('archive', '--format=zip', f'--prefix=luci-theme-unifi-{version}/',
         '--output=' + str(archive), revision)
     with zipfile.ZipFile(archive) as bundle:
         bad_file = bundle.testzip()

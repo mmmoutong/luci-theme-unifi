@@ -27,6 +27,7 @@ function render(values={}) {
  }
  try {
   assert.equal(fs.readFileSync(path.join(root,'preview/login.html'),'utf8'),render(),'preview is rendered from production template');
+  assert.equal(fs.readFileSync(path.join(root,'preview/login-en.html'),'utf8'),render({login_language:'en'}),'English preview is rendered from production template');
   const page=await open();
   assert.equal(await page.locator('#luci_username').inputValue(),'root');
   assert.equal(await page.locator('#luci_password').evaluate(x=>document.activeElement===x),true);

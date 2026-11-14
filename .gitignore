@@ -44,12 +44,5 @@ venv/
 *.swo
 *~
 
-# Raw reference captures and internal notes can contain local information.
-# Keep only provenance and measured values required by the public tests.
-/research/*
-!/research/brand-data-sources.json
-!/research/unifi-dark-palette.json
-!/research/control-reference/
-/research/control-reference/*
-!/research/control-reference/system-dark.json
-!/research/control-reference/dialog-dark.json
+# Local research captures and internal notes
+/research/

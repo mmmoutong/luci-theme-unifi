@@ -25,6 +25,8 @@ python3 tools/preview_server.py
 
 预览服务仅监听 `127.0.0.1`，加载主题实际资源和虚构数据，不连接路由器。设置保存只模拟写入浏览器存储，登录预览会阻止凭据提交。按 Ctrl+C 停止服务。
 
+使用 `?page=overview&lang=en`、`?page=clients&lang=en` 或 `?page=login&lang=en` 可查看英文预览。保持预览服务运行并安装 Google Chrome 后，执行 `node tools/capture_screenshots.cjs`，即可用 Chrome 原生字体渲染更新中英文 README 的 1920×1080 截图。
+
 ## 开发与构建
 
 ### 本地生成 IPK
@@ -35,9 +37,9 @@ python3 tools/preview_server.py
 python3 tools/build_package.py
 ```
 
-生成文件位于被 Git 忽略的 `artifacts/`：
+生成文件位于被 Git 忽略的 `artifacts/packages/`：
 
-- `luci-theme-unifi_0.8.2-1_all.ipk`：可安装的软件包。
+- `luci-theme-unifi_<version>-1_all.ipk`：可安装的软件包。
 - `luci-theme-unifi-rootfs.tar.gz`：安装载荷。
 - `manifest.json`：载荷路径、权限和 SHA-256 摘要。
 - `SHA256SUMS`：生成的顶层产物校验和。
@@ -58,6 +60,7 @@ make package/luci-theme-unifi/compile V=s
 
 ```sh
 node --test tests/*.test.cjs
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 安装 OpenWrt `ucode` 解释器后，可验证后台历史存储：
@@ -66,36 +69,26 @@ node --test tests/*.test.cjs
 ucode tests/activity-store.uc
 ```
 
-浏览器检查还需要 Playwright 及其 Chromium。可以将依赖安装到本地工具目录：
+浏览器检查使用锁定版本的 Playwright，安装依赖及 Chromium：
 
 ```sh
-npm install --no-save --package-lock=false --prefix ./vendor/browser-tests playwright
-./vendor/browser-tests/node_modules/.bin/playwright install chromium
+npm ci
+npx playwright install chromium
 ```
 
-在另一个终端保持预览服务运行，然后执行：
+在另一个终端运行 `python3 tools/preview_server.py`，随后执行全部浏览器检查：
 
 ```sh
-export PLAYWRIGHT_MODULE="$PWD/vendor/browser-tests/node_modules/playwright"
-node tests/browser-smoke.cjs
-node tests/client-ui-browser.cjs
-node tests/settings-browser.cjs
-node tests/activity-browser.cjs
-node tests/controls-browser.cjs
-node tests/tabs-browser.cjs
+UCODE_BIN=/path/to/ucode npm run test:browser
 ```
 
-登录页检查另需一个可在开发机运行的 `ucode`：
+`UCODE_BIN` 指向开发机上的 OpenWrt ucode 解释器，默认查找 `vendor/ucode/build/ucode`。CI 会构建固定提交的解释器，同时验证历史存储与模板编译。
 
-```sh
-UCODE_BIN=/path/to/ucode node tests/login-browser.cjs
-```
-
-可通过 `UNIFI_PREVIEW_URL` 和 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` 指定预览地址及浏览器路径。浏览器检查将报告和截图写入 `artifacts/`，不需要路由器凭据。
+可通过 `UNIFI_PREVIEW_URL` 和 `PLAYWRIGHT_CHROMIUM_EXECUTABLE` 指定预览地址及浏览器路径。报告和截图写入 `artifacts/`，不需要路由器凭据。
 
 ### 更新厂商数据
 
-生成的 `htdocs/luci-static/resources/unifi/brand-data.js` 已纳入版本管理，普通构建及路由器运行无需下载厂商数据。定义位于 `tools/brand-definitions.json`，来源校验和位于 `research/brand-data-sources.json`。
+生成的 `htdocs/luci-static/resources/unifi/brand-data.js` 已纳入版本管理，普通构建及路由器运行无需下载厂商数据。定义位于 `tools/brand-definitions.json`，来源校验和位于 `tools/brand-data-sources.json`。
 
 ```sh
 python3 tools/generate_brands.py
@@ -112,10 +105,10 @@ python3 tools/generate_brands.py --check
 | `ucode/` | LuCI 页头、页尾和认证模板 |
 | `root/` | 主题注册、配置、菜单、ACL 和许可 |
 | `preview/` | 本地预览及虚构数据 |
-| `tests/` | 单元测试和浏览器检查 |
-| `tools/` | 预览、打包及维护工具 |
+| `tests/` | 单元测试、浏览器检查及 `fixtures/reference/` 中的视觉基准 |
+| `tools/` | 预览、打包、版本解析及厂商数据来源记录 |
 | `docs/` | 用户与开发文档及预览截图 |
-| `research/` | 纳入版本管理的数据来源记录和测试所需样式测量值 |
+| `research/` | 被 Git 整体忽略的本地研究资料和内部记录 |
 
 仅 `htdocs/`、`ucode/`、`root/` 提供路由器安装载荷。下载工具、生成包、原站采集内容、设备备份、实机部署证据及历史本地笔记，均由 [`.gitignore`](../.gitignore) 排除。提交内容和截图中请勿包含真实设备名称、地址、凭据或会话数据。
 
@@ -132,6 +125,45 @@ python3 tools/bundle_release.py
 反馈问题时，请提供固件与 LuCI 版本、主题版本、浏览器、视口大小、受影响页面及复现步骤。截图和日志请先移除设备与会话信息。第三方插件布局问题还需提供插件名称与版本。
 
 请让修改范围保持集中，并运行相关检查。共享控件或布局变更应同时检查浅色、深色、桌面和手机宽度。欢迎提供兼容性反馈，请区分本地预览结果与路由器实机结果。
+
+## 校验安装包
+
+将下载的 IPK 与同次构建的 `SHA256SUMS` 放在路由器 `/tmp/`，先校验 IPK，成功后再按 README 安装：
+
+```sh
+cd /tmp
+sed -n '/\.ipk$/p' SHA256SUMS | sha256sum -c -
+```
+
+输出应显示对应 IPK 为 `OK`。Actions 下载的是 ZIP，需要先在电脑上解压。CI artifact 保留 30 天；发布版本的附件位于 Releases。
+
+开发包的版本号低于正式版。如果需要用开发版替换已安装的正式版，请先切换到其他主题并卸载现有 Unifi 软件包，再安装开发版 IPK。
+
+## 版本与发布
+
+发布版本以 Git 标签为唯一来源，源码无需重复维护当前版本号：
+
+- `v0.9.0` → IPK 版本 `0.9.0-1`。
+- `v0.9.0-rc.1` → IPK 版本 `0.9.0~rc.1-1`，GitHub 标记为预发布。
+- 未打标签的提交 → `0~git<提交时间>.<提交号>-1`；工作区有改动时增加 `+dirty` 标记。
+- 无 Git 信息的源码副本 → `0~dev-1`；可用 `python3 tools/build_package.py --version 0.9.0` 显式指定版本。SDK 构建可传入 `PKG_VERSION=0.9.0`。
+
+`PKG_RELEASE` 仅表示软件包修订号。构建时，版本会写入 IPK 元数据、文件名、`manifest.json` 和 LuCI 模板的资源缓存标识；模板使用 LuCI 原生的 `PKG_VERSION` 注释占位符，本地打包器和 SDK 均支持替换。
+
+CI 在分支推送和 PR 时运行单元、打包、ucode 及全部浏览器检查，成功后上传 IPK artifact。推送版本标签会复用同一套检查，再将经过校验的 artifact 发布到 GitHub Releases。
+
+以 `v0.9.0` 为例，发布步骤如下；应按实际版本替换：
+
+1. 将 `CHANGELOG.md` 的待发布内容整理为 `## [0.9.0] - YYYY-MM-DD`，使用实际发布日期。
+2. 提交并推送代码，确认 CI 通过。
+3. 创建并推送标签：
+
+```sh
+git tag -a v0.9.0 -m "Release v0.9.0"
+git push origin v0.9.0
+```
+
+Release workflow 验证标签格式、标签是否指向当前提交，以及更新日志是否包含同版本的非空章节；校验失败不会创建 Release。发布附件包括 IPK、安装载荷、清单和 SHA-256 校验文件。
 
 ## 恢复与卸载
 

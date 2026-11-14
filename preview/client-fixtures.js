@@ -8,7 +8,7 @@ window.demoClients=[
 	['Tower NAS','10.0.0.103','80:11:22:33:44:05'],
 	['Home Assistant','10.0.0.8','02:11:22:33:44:06'],
 	['PlayStation 5','10.0.0.142','E0:11:22:33:44:07'],
-	['小米扫地机器人','10.0.0.163','54:11:22:33:44:08','Home IoT',-72],
+	[/^zh/.test(document.documentElement.lang)?'小米扫地机器人':'Xiaomi Robot Vacuum','10.0.0.163','54:11:22:33:44:08','Home IoT',-72],
 	['Desk PC','10.0.0.101','84:11:22:33:44:09'],
 	['Nintendo Switch','10.0.0.178','7C:11:22:33:44:0A','Home 5 GHz',-65],
 	['Guest iPhone','10.0.20.23','D2:11:22:33:44:0B','Guest',-68],

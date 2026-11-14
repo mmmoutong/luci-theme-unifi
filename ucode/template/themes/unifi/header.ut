@@ -25,15 +25,15 @@
 	<head>
 		<meta charset="utf-8">
 		<title>{{ striptags(`${boardinfo.hostname ?? '?'}${node ? ` - ${node.title}` : ''}`) }} - LuCI</title>
-		<script src="{{ media }}/appearance.js?v=0.8.2"></script>
+		<script src="{{ media }}/appearance.js{# ?v=PKG_VERSION #}"></script>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="{{ media }}/cascade.css?v=0.8.2">
-		<link rel="stylesheet" href="{{ media }}/controls.css?v=0.8.2">
-		<link rel="stylesheet" href="{{ media }}/layout.css?v=0.8.2">
-		<link rel="stylesheet" href="{{ media }}/icons.css?v=0.8.2">
-		<link rel="stylesheet" media="only screen and (max-device-width: 854px)" href="{{ media }}/mobile.css?v=0.8.2" type="text/css" />
+		<link rel="stylesheet" href="{{ media }}/cascade.css{# ?v=PKG_VERSION #}">
+		<link rel="stylesheet" href="{{ media }}/controls.css{# ?v=PKG_VERSION #}">
+		<link rel="stylesheet" href="{{ media }}/layout.css{# ?v=PKG_VERSION #}">
+		<link rel="stylesheet" href="{{ media }}/icons.css{# ?v=PKG_VERSION #}">
+		<link rel="stylesheet" media="only screen and (max-device-width: 854px)" href="{{ media }}/mobile.css{# ?v=PKG_VERSION #}" type="text/css" />
 		{% if (blank_page): %}
-		<link rel="stylesheet" href="{{ media }}/login.css?v=0.8.2">
+		<link rel="stylesheet" href="{{ media }}/login.css{# ?v=PKG_VERSION #}">
 		{% endif %}
 		<link rel="icon" href="{{ media }}/logo.svg" type="image/svg+xml">
 		{% if (node?.css): %}

@@ -1,13 +1,21 @@
 # luci-theme-unifi
 
-A UniFi-inspired theme for OpenWrt and ImmortalWrt, with a live dashboard, client inventory, and light and dark modes.
-
 [简体中文](docs/README.md) · [Installation](#installation) · [Development](docs/development.md)
 
-<p align="center">
-  <a href="docs/images/dashboard.png"><img src="docs/images/dashboard.png" alt="Dashboard in light mode" width="32%"></a>
-  <a href="docs/images/clients-dark.png"><img src="docs/images/clients-dark.png" alt="Client devices in dark mode" width="32%"></a>
-  <a href="docs/images/login.png"><img src="docs/images/login.png" alt="Login page" width="32%"></a>
+A UniFi-inspired theme for OpenWrt and ImmortalWrt, with a live dashboard, client inventory, and light and dark modes.
+
+## Preview
+
+<p>
+  <a href="docs/images/dashboard-en.png"><img src="docs/images/dashboard-en.png" alt="Dashboard in light mode" width="960"></a>
+</p>
+
+<p>
+  <a href="docs/images/clients-dark-en.png"><img src="docs/images/clients-dark-en.png" alt="Client devices in dark mode" width="960"></a>
+</p>
+
+<p>
+  <a href="docs/images/login-en.png"><img src="docs/images/login-en.png" alt="Login page" width="960"></a>
 </p>
 
 ## Features
@@ -19,19 +27,15 @@ A UniFi-inspired theme for OpenWrt and ImmortalWrt, with a live dashboard, clien
 
 ## Compatibility
 
-Targets OpenWrt / ImmortalWrt 23.05-based firmware with **ucode-based LuCI** and **opkg**. The dashboard, settings, and background collector have been tested on ImmortalWrt 23.05.4; the current login page has only been checked locally. Legacy Lua-only LuCI, APK-based firmware, and third-party plugin layouts are not verified.
+**Tested on the 23.05 series** (ImmortalWrt 23.05.4). **Newer versions have not been tested.** Requires LuCI with ucode templates and the `opkg` package manager.
 
 Dependencies: `luci-base`, `luci-theme-bootstrap`, `luci-mod-status`, `ucode-mod-uloop`. The package manager installs these from your firmware's feeds.
 
 ## Installation
 
-Build the IPK on your computer with Python **3.9+**, from the repository root:
-
-```sh
-python3 tools/build_package.py
-```
-
-Copy the generated `artifacts/luci-theme-unifi_*.ipk` to the router's `/tmp/` directory, then run over SSH on the router:
+1. Download `luci-theme-unifi_…_all.ipk` from [Releases](https://github.com/mouse233/luci-theme-unifi/releases). For a development build, open a successful [Actions → CI](https://github.com/mouse233/luci-theme-unifi/actions/workflows/ci.yml) run, download its `luci-theme-unifi-…` artifact, and extract the IPK.
+2. Upload the IPK to the router's `/tmp/` directory. To verify it, also download and upload `SHA256SUMS` and follow the [checksum instructions](docs/development.md#verify-a-package).
+3. Run over SSH on the router:
 
 ```sh
 opkg update
@@ -62,7 +66,7 @@ python3 tools/preview_server.py
 
 Open [127.0.0.1:8765](http://127.0.0.1:8765/). The preview uses synthetic data and does not connect to your router.
 
-See the [development guide](docs/development.md) for SDK builds, tests, vendor data, and release packaging. When reporting an issue, include your firmware, LuCI and theme versions, browser, affected page, and reproduction steps.
+See the [development guide](docs/development.md) for local packaging, SDK builds, tests, and tag releases, and the [changelog](CHANGELOG.md) for version history. When reporting an issue, include your firmware, LuCI and theme versions, browser, affected page, and reproduction steps.
 
 ## License and credits
 

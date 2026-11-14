@@ -18,7 +18,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 CACHE = ROOT / 'vendor/brand-data'
 OUTPUT = ROOT / 'htdocs/luci-static/resources/unifi/brand-data.js'
-SOURCES = ROOT / 'research/brand-data-sources.json'
+SOURCES = ROOT / 'tools/brand-data-sources.json'
 ICON_VERSION = '16.37.0'
 ICON_BASE = f'https://raw.githubusercontent.com/simple-icons/simple-icons/{ICON_VERSION}'
 OUI_URL = 'https://standards-oui.ieee.org/oui/oui.csv'

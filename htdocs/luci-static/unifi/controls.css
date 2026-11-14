@@ -1,6 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0 */
 /* UniFi Network 10.6.109: measured in the user's reference UI.
- * See research/control-reference and research/notes/control-adaptation.md.
+ * See tests/fixtures/reference/controls for measured reference values.
  * LuCI still owns widget DOM, validation, keyboard handling and persistence. */
 :root {
 	--uf-control-bg:rgba(33,35,39,.04);

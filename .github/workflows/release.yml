@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: test
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.11'
+      - name: Validate the tag and changelog
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 tools/version.py --tag "$RELEASE_TAG"
+          python3 tools/release_notes.py "$RELEASE_TAG" --output artifacts/release-notes.md
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8
+        with:
+          name: luci-theme-unifi-${{ github.sha }}
+          path: artifacts/packages
+      - name: Verify package checksums
+        working-directory: artifacts/packages
+        run: sha256sum -c SHA256SUMS
+      - name: Match package provenance to the release tag
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PYTHON'
+          import json
+          import os
+          import re
+          import sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools')
+          from version import resolve_version
+          expected = resolve_version(tag=os.environ['RELEASE_TAG'])
+          manifest = json.loads(Path('artifacts/packages/manifest.json').read_text())
+          assert manifest['tag'] == expected['tag']
+          assert manifest['commit'] == expected['commit']
+          assert manifest['dirty'] is False
+          revision = re.search(r'^PKG_RELEASE:=(\d+)$', Path('Makefile').read_text(), re.M)[1]
+          assert manifest['version'] == expected['version'] + '-' + revision
+          PYTHON
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          flags=()
+          if [[ "$RELEASE_TAG" == *-* ]]; then flags+=(--prerelease); fi
+          gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
+            --notes-file artifacts/release-notes.md "${flags[@]}" \
+            artifacts/packages/*.ipk artifacts/packages/SHA256SUMS \
+            artifacts/packages/manifest.json artifacts/packages/luci-theme-unifi-rootfs.tar.gz

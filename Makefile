@@ -1,9 +1,11 @@
+UNIFI_SOURCE_DIR:=$(dir $(abspath $(lastword $(MAKEFILE_LIST))))
+
 include $(TOPDIR)/rules.mk
 
 LUCI_TITLE:=Unifi theme with an OpenWrt-native dashboard
 LUCI_DEPENDS:=+luci-base +luci-theme-bootstrap +luci-mod-status +ucode-mod-uloop
 LUCI_PKGARCH:=all
-PKG_VERSION:=0.8.2
+PKG_VERSION:=$(shell python3 "$(UNIFI_SOURCE_DIR)tools/version.py")
 PKG_RELEASE:=1
 PKG_LICENSE:=Apache-2.0 CC0-1.0 OFL-1.1
 

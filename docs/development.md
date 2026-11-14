@@ -25,6 +25,8 @@ Open [the local preview](http://127.0.0.1:8765/). Use the page selector for the 
 
 The server binds to `127.0.0.1` and uses the production theme assets with synthetic fixtures. It does not contact a router. Settings are simulated in browser storage, and the login preview prevents credential submission. Stop the server with Ctrl+C.
 
+Use `?page=overview&lang=en`, `?page=clients&lang=en`, or `?page=login&lang=en` for English previews. With the preview server running and Google Chrome installed, `node tools/capture_screenshots.cjs` refreshes the Chinese and English README images at 1920×1080 using Chrome's native font rendering.
+
 ## Development
 
 ### Build a local IPK
@@ -35,9 +37,9 @@ With Python 3.9 or later, from the repository root:
 python3 tools/build_package.py
 ```
 
-Output is written to the ignored `artifacts/` directory:
+Output is written to the ignored `artifacts/packages/` directory:
 
-- `luci-theme-unifi_0.8.2-1_all.ipk` — installable package.
+- `luci-theme-unifi_<version>-1_all.ipk` — installable package.
 - `luci-theme-unifi-rootfs.tar.gz` — package payload.
 - `manifest.json` — payload paths, modes, and SHA-256 hashes.
 - `SHA256SUMS` — checksums for generated top-level artifacts.
@@ -58,6 +60,7 @@ The unit tests use Node.js's built-in test runner and require no npm dependencie
 
 ```sh
 node --test tests/*.test.cjs
+python3 -m unittest discover -s tests -p 'test_*.py' -v
 ```
 
 With the OpenWrt `ucode` interpreter available, verify the background history store:
@@ -66,36 +69,26 @@ With the OpenWrt `ucode` interpreter available, verify the background history st
 ucode tests/activity-store.uc
 ```
 
-Browser checks additionally require Playwright and its Chromium browser. Install them in a local dependency directory:
+Browser checks use a pinned Playwright version. Install the dependencies and Chromium:
 
 ```sh
-npm install --no-save --package-lock=false --prefix ./vendor/browser-tests playwright
-./vendor/browser-tests/node_modules/.bin/playwright install chromium
+npm ci
+npx playwright install chromium
 ```
 
-Keep the preview server running in another terminal, then run:
+Run `python3 tools/preview_server.py` in another terminal, then execute every browser suite:
 
 ```sh
-export PLAYWRIGHT_MODULE="$PWD/vendor/browser-tests/node_modules/playwright"
-node tests/browser-smoke.cjs
-node tests/client-ui-browser.cjs
-node tests/settings-browser.cjs
-node tests/activity-browser.cjs
-node tests/controls-browser.cjs
-node tests/tabs-browser.cjs
+UCODE_BIN=/path/to/ucode npm run test:browser
 ```
 
-The login check also needs a host `ucode` executable:
+`UCODE_BIN` selects a host OpenWrt ucode interpreter; the default is `vendor/ucode/build/ucode`. CI builds a pinned interpreter and checks the history store and template compilation too.
 
-```sh
-UCODE_BIN=/path/to/ucode node tests/login-browser.cjs
-```
-
-Optional overrides are `UNIFI_PREVIEW_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. Browser checks write reports and screenshots to `artifacts/`. No router credentials are needed.
+Optional overrides are `UNIFI_PREVIEW_URL` and `PLAYWRIGHT_CHROMIUM_EXECUTABLE`. Reports and screenshots go to `artifacts/`. No router credentials are needed.
 
 ### Update vendor data
 
-The generated `htdocs/luci-static/resources/unifi/brand-data.js` is committed, so normal builds and router use work without downloading brand data. Definitions live in `tools/brand-definitions.json`, and source checksums are recorded in `research/brand-data-sources.json`.
+The generated `htdocs/luci-static/resources/unifi/brand-data.js` is committed, so normal builds and router use work without downloading brand data. Definitions live in `tools/brand-definitions.json`, and source checksums are recorded in `tools/brand-data-sources.json`.
 
 ```sh
 python3 tools/generate_brands.py
@@ -112,10 +105,10 @@ The first command downloads source files into the ignored `vendor/brand-data/` c
 | `ucode/` | LuCI header, footer, and authentication templates |
 | `root/` | Theme registration, configuration, menus, ACLs, and license files |
 | `preview/` | Local demo harness and synthetic fixtures |
-| `tests/` | Unit and browser checks |
-| `tools/` | Preview, packaging, and maintenance utilities |
+| `tests/` | Unit/browser checks and visual baselines in `fixtures/reference/` |
+| `tools/` | Preview, packaging, version resolution, and vendor source checksums |
 | `docs/` | User and developer documentation and preview screenshots |
-| `research/` | Tracked provenance and style measurements needed by tests |
+| `research/` | Ignored local research captures and internal notes |
 
 Only `htdocs/`, `ucode/`, and `root/` supply router payload files. Downloaded tools, generated packages, raw reference captures, device backups, deployment evidence, and historical local notes are excluded by [`.gitignore`](../.gitignore). Keep real hostnames, addresses, credentials, and session data out of contributions and screenshots.
 
@@ -132,6 +125,45 @@ This archives the committed Git tree and writes a separate source checksum file.
 For a bug report, include the firmware and LuCI versions, theme version, browser, viewport size, affected page, and steps to reproduce. Redact device and session information from screenshots and logs. For a plugin layout issue, include the plugin name and version.
 
 Keep changes focused and run the relevant checks. Changes to shared controls or layout should be checked in light and dark modes at desktop and mobile widths. Compatibility reports are welcome; please distinguish local preview results from tests on an actual router.
+
+## Verify a package
+
+Put the downloaded IPK and its matching `SHA256SUMS` in the router's `/tmp/` directory. Verify the IPK before following the README installation commands:
+
+```sh
+cd /tmp
+sed -n '/\.ipk$/p' SHA256SUMS | sha256sum -c -
+```
+
+The IPK must report `OK`. Extract Actions ZIP artifacts on your computer first. CI artifacts are retained for 30 days; tagged release attachments are available under Releases.
+
+Development package versions sort below tagged releases. To replace an installed release with a development build, switch to another theme and remove the existing Unifi package before installing the development IPK.
+
+## Versions and releases
+
+Git tags are the source of release versions; source files do not repeat the current version number:
+
+- `v0.9.0` → IPK version `0.9.0-1`.
+- `v0.9.0-rc.1` → IPK version `0.9.0~rc.1-1`, published as a GitHub prerelease.
+- Untagged commits → `0~git<commit-time>.<commit>-1`, with `+dirty` added for local changes.
+- Source copies without Git metadata → `0~dev-1`; use `python3 tools/build_package.py --version 0.9.0` to set a version explicitly. SDK builds accept `PKG_VERSION=0.9.0`.
+
+`PKG_RELEASE` is the package revision only. Builds write the version into IPK metadata, filenames, `manifest.json`, and template cache identifiers. Templates use LuCI's native `PKG_VERSION` comment marker, supported by both the local builder and SDK.
+
+CI runs unit, packaging, ucode, and all browser checks on branch pushes and pull requests, then uploads the IPK artifact. Version tag pushes reuse those checks and publish the verified artifact to GitHub Releases.
+
+For example, to release `v0.9.0` (replace this with the intended version):
+
+1. Move the pending changes in `CHANGELOG.md` into `## [0.9.0] - YYYY-MM-DD`, using the actual release date.
+2. Commit and push the changes, and confirm CI passes.
+3. Create and push the tag:
+
+```sh
+git tag -a v0.9.0 -m "Release v0.9.0"
+git push origin v0.9.0
+```
+
+The Release workflow validates the tag format, its commit, and a nonempty matching changelog section before publishing. Attachments include the IPK, root filesystem payload, manifest, and SHA-256 checksums.
 
 ## Restore or uninstall
 

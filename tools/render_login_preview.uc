@@ -22,7 +22,7 @@ global.include = function(name) {
   if (global.preview_submit !== false) print('<script src="/preview/login.js" defer></script>');
   print('</body></html>\n');return;
  }
- print('<!doctype html><html lang="',language,'" data-darkmode="true"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unifi · 登录预览</title>');
+ print('<!doctype html><html lang="',language,'" data-darkmode="true"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>luci-theme-unifi · ',substr(language,0,2) == 'zh' ? '登录预览' : 'Login preview','</title>');
  for (let file in ['cascade','controls','layout','icons','mobile','login'])
   print('<link rel="stylesheet" href="',global.media,'/',file,'.css">');
  print('<link rel="icon" href="',global.media,'/logo.svg"></head><body class="uf-theme uf-login">\n');

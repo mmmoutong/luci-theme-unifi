@@ -28,6 +28,6 @@
 		</div>
 	</section>
 </main>
-<script src="{{ media }}/login.js?v=0.8.2" defer></script>
+<script src="{{ media }}/login.js{# ?v=PKG_VERSION #}" defer></script>
 
 {% include('footer', { blank_page: true }) %}

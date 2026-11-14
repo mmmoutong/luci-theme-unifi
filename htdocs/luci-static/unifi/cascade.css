@@ -192,7 +192,7 @@ body.uf-theme{font-family:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI','Not
 
 /* Appearance is resolved before stylesheets load by the server-rendered header.
  * Auto mode follows system changes without changing the saved preference. */
-/* Dark palette sampled from the supplied original PNG; see research/unifi-dark-palette.json. */
+/* Dark palette sampled from the supplied original PNG; see tests/fixtures/reference/unifi-dark-palette.json. */
 html[data-darkmode=true]{--uf-blue:#4797ff;--uf-blue-hover:#76b2ff;--uf-blue-soft:#04264d;--uf-text:#dee0e3;--uf-secondary:#b7bcc2;--uf-muted:#8b949e;--uf-line:#232426;--uf-line-strong:#33373d;--uf-grid:#34383d;--uf-subtle:#1c1d1f;--uf-canvas:#131416;--uf-surface:#131416;--uf-raised:#292b2f;--uf-hover:#1d1e21;--uf-green:#59cb91;--uf-danger:#f08089;--uf-icon-bg:#e9edf2;color-scheme:dark}
 html[data-darkmode=true] .uf-theme>header{background:var(--uf-raised);box-shadow:inset 0 -1px var(--uf-grid)}
 html[data-darkmode=true] .uf-theme #maincontent.container{background:var(--uf-canvas)}

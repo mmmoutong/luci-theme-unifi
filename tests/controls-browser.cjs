@@ -6,11 +6,11 @@ const path = require('node:path');
 const {chromium} = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 const base = process.env.UNIFI_PREVIEW_URL || 'http://127.0.0.1:8765';
 const output = path.resolve(__dirname, '../artifacts/controls');
-const reference = require('../research/control-reference/system-dark.json');
+const reference = require('../tests/fixtures/reference/controls/system-dark.json');
 const darkCheck = reference.find(x => x.selector === 'input[type=checkbox]:checked').elements[0].style;
 const darkRadio = reference.find(x => x.selector === 'input[type=radio]:checked').elements[0].style;
 const darkInput = reference.find(x => x.selector === 'input[type=text]').elements[0].style;
-const dialogReference = require('../research/control-reference/dialog-dark.json').dialog.style;
+const dialogReference = require('../tests/fixtures/reference/controls/dialog-dark.json').dialog.style;
 fs.mkdirSync(output, {recursive:true});
 const layoutOutput=path.resolve(__dirname,'../artifacts/layout');
 fs.mkdirSync(layoutOutput,{recursive:true});
@@ -218,7 +218,7 @@ fs.mkdirSync(layoutOutput,{recursive:true});
   checked.push('Restored 0.6.3: native pages use available width, pure forms cap at 960px, mixed table views remain wide; unboxed groups, desktop/mobile padding, label alignment and dependency field visibility');
   checked.push('40px row baseline, 8px title gap, separate value/label/help colors, 18px help line height with 4px gap, errors preserved and uniform SVG sizing/strokes without changing brand marks');
   assert.deepEqual(errors,[]);
-  fs.writeFileSync(path.join(output,'checks.json'),JSON.stringify({reference:'research/control-reference/system-dark.json',checked,rendered,pageErrors:errors},null,2)+'\n');
+  fs.writeFileSync(path.join(output,'checks.json'),JSON.stringify({reference:'tests/fixtures/reference/controls/system-dark.json',checked,rendered,pageErrors:errors},null,2)+'\n');
   console.log('Control browser checks passed:',checked.join('; '));
  } catch(error) {
   console.error({url:page.url(),pageErrors:errors,failedRequests,

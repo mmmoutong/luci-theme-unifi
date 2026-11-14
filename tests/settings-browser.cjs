@@ -2,7 +2,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),path=require('n
 const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
 const base=process.env.UNIFI_PREVIEW_URL||'http://127.0.0.1:8765';
 const output=path.resolve(__dirname,'../artifacts/settings');fs.mkdirSync(output,{recursive:true});
-const palette=require('../research/unifi-dark-palette.json').measurements;
+const palette=require('../tests/fixtures/reference/unifi-dark-palette.json').measurements;
 const rgb=key=>'rgb('+palette[key].hex.slice(1).match(/../g).map(v=>parseInt(v,16)).join(', ')+')';
 (async()=>{
  const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{})});
@@ -30,7 +30,12 @@ const rgb=key=>'rgb('+palette[key].hex.slice(1).match(/../g).map(v=>parseInt(v,1
   assert.equal(await page.getByRole('combobox',{name:'每页条数'}).inputValue(),'25');
   assert.equal(await page.evaluate(()=>timers[0].interval),30);
   assert.equal(await page.locator('.uf-nav-toggle').getAttribute('aria-expanded'),'true');
-  const colors=await page.locator('.uf-devices-table td').first().evaluate(el=>({bg:getComputedStyle(el.closest('table')).backgroundColor,fg:getComputedStyle(el).color}));
+  const colors=await page.locator('.uf-devices-table td').first().evaluate(el=>{
+   // Transparent tables show their containing surface; check the visible color.
+   let surface=el;
+   while(surface&&getComputedStyle(surface).backgroundColor==='rgba(0, 0, 0, 0)')surface=surface.parentElement;
+   return {bg:surface?getComputedStyle(surface).backgroundColor:null,fg:getComputedStyle(el).color};
+  });
   assert.equal(colors.bg,rgb('canvas'));assert.equal(colors.fg,rgb('secondary_text'));
   const sampledColors=await page.evaluate(()=>({header:getComputedStyle(document.querySelector('body>header')).backgroundColor,
     navigation:getComputedStyle(document.querySelector('.uf-navigation')).backgroundColor,

@@ -1,13 +1,21 @@
 # luci-theme-unifi
 
-为 OpenWrt 和 ImmortalWrt 制作的 UniFi 风格主题，提供实时仪表盘、客户端列表和浅深色模式。
-
 [English](../README.md) · [安装](#安装) · [开发指南](development.zh-CN.md)
 
-<p align="center">
-  <a href="images/dashboard.png"><img src="images/dashboard.png" alt="浅色仪表盘" width="32%"></a>
-  <a href="images/clients-dark.png"><img src="images/clients-dark.png" alt="深色客户端列表" width="32%"></a>
-  <a href="images/login.png"><img src="images/login.png" alt="登录页面" width="32%"></a>
+为 OpenWrt 和 ImmortalWrt 制作的 UniFi 风格主题，提供实时仪表盘、客户端列表和浅深色模式。
+
+## 预览
+
+<p>
+  <a href="images/dashboard.png"><img src="images/dashboard.png" alt="浅色仪表盘" width="960"></a>
+</p>
+
+<p>
+  <a href="images/clients-dark.png"><img src="images/clients-dark.png" alt="深色客户端列表" width="960"></a>
+</p>
+
+<p>
+  <a href="images/login.png"><img src="images/login.png" alt="登录页面" width="960"></a>
 </p>
 
 ## 功能
@@ -19,19 +27,15 @@
 
 ## 兼容性
 
-面向基于 OpenWrt / ImmortalWrt 23.05、使用 **ucode 版 LuCI** 和 **opkg** 的固件。仪表盘、主题设置及后台采集已在 ImmortalWrt 23.05.4 上验证，当前登录页仅完成本地检查。旧版纯 Lua LuCI、APK 固件及第三方插件布局尚未验证。
+**23.05 系列已测试通过**（实测 ImmortalWrt 23.05.4），**更高版本待测试**。需要使用 ucode 模板的 LuCI 和 `opkg` 包管理器。
 
 依赖：`luci-base`、`luci-theme-bootstrap`、`luci-mod-status`、`ucode-mod-uloop`，安装时由包管理器从固件软件源获取。
 
 ## 安装
 
-在电脑上进入仓库根目录，使用 Python **3.9+** 生成 IPK：
-
-```sh
-python3 tools/build_package.py
-```
-
-将生成的 `artifacts/luci-theme-unifi_*.ipk` 上传至路由器 `/tmp/`，通过 SSH 在路由器上执行：
+1. 从 [Releases](https://github.com/mouse233/luci-theme-unifi/releases) 下载发布版本的 `luci-theme-unifi_…_all.ipk`。开发版可在 [Actions → CI](https://github.com/mouse233/luci-theme-unifi/actions/workflows/ci.yml) 的成功运行中下载 `luci-theme-unifi-…` artifact，解压后取出 IPK。
+2. 将 IPK 上传至路由器 `/tmp/`。如需校验，同时下载并上传 `SHA256SUMS`，按[校验说明](development.zh-CN.md#校验安装包)操作。
+3. 通过 SSH 在路由器上执行：
 
 ```sh
 opkg update
@@ -62,7 +66,7 @@ python3 tools/preview_server.py
 
 打开 [127.0.0.1:8765](http://127.0.0.1:8765/)。预览使用虚构数据，不连接路由器。
 
-SDK 构建、测试、厂商数据更新及发布打包见[开发指南](development.zh-CN.md)。反馈问题时，请附固件、LuCI 和主题版本、浏览器、受影响页面及复现步骤。
+本地打包、SDK 构建、测试及标签发布见[开发指南](development.zh-CN.md)，版本变更见[更新日志](../CHANGELOG.md)。反馈问题时，请附固件、LuCI 和主题版本、浏览器、受影响页面及复现步骤。
 
 ## 许可与致谢
 
