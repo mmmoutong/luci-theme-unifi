@@ -2,11 +2,12 @@ from pathlib import Path
 import subprocess
 import sys
 import tempfile
+from unittest.mock import patch
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'tools'))
 from version import package_version, resolve_version
-from release_notes import release_notes
+from release_notes import release_notes, promote_unreleased
 
 
 class VersionTests(unittest.TestCase):
@@ -67,11 +68,37 @@ class VersionTests(unittest.TestCase):
     def test_notes_are_specific_to_the_requested_release(self):
         content = '# Changelog\n\n## [Unreleased]\n\n- Later work.\n\n## [1.2.3] - 2026-01-01\n\n- Released change.\n\n## [1.2.2] - 2025-12-01\n\n- Earlier change.\n'
         self.assertEqual(release_notes(content, 'v1.2.3'), '- Released change.\n')
+        self.assertEqual(release_notes(content, 'v1.2.3', allow_unreleased=True), '- Released change.\n')
         for missing in ['v9.9.9', 'v1.2.3-rc.1']:
             with self.assertRaises(ValueError):
                 release_notes(content, missing)
         with self.assertRaises(ValueError):
             release_notes('## [1.2.3] - 2026-01-01\n\n## [1.2.2] - 2025-12-01\n- Previous\n', 'v1.2.3')
+        unreleased_only = '# Changelog\n\n## [Unreleased]\n\n- Pending release.\n\n## [1.2.2] - 2025-12-01\n\n- Earlier change.\n'
+        self.assertEqual(release_notes(unreleased_only, 'v1.2.3', allow_unreleased=True),
+                         '- Pending release.\n')
+        with self.assertRaises(ValueError):
+            release_notes('## [Unreleased]\n\n## [1.2.2] - 2025-12-01\n\n- Earlier change.\n',
+                          'v1.2.3', allow_unreleased=True)
+
+    def test_promote_unreleased_to_tagged_section(self):
+        unreleased_only = '# Changelog\n\n## [Unreleased]\n\n### Added\n\n- Pending release.\n\n## [1.2.2] - 2025-12-01\n\n- Earlier change.\n'
+        with patch('release_notes.date_cls') as mocked_date:
+            mocked_date.today.return_value.isoformat.return_value = '2026-03-04'
+            promoted, changed = promote_unreleased(unreleased_only, 'v1.2.3')
+        self.assertTrue(changed)
+        self.assertIn('## [Unreleased]\n\n## [1.2.3] - 2026-03-04\n', promoted)
+        self.assertEqual(release_notes(promoted, 'v1.2.3'), '### Added\n\n- Pending release.\n')
+        self.assertEqual(release_notes(promoted, 'v1.2.3', allow_unreleased=True), '### Added\n\n- Pending release.\n')
+
+    def test_promote_unreleased_noop_or_error_when_missing_content(self):
+        already_released = '# Changelog\n\n## [Unreleased]\n\n- Next work.\n\n## [1.2.3] - 2026-01-01\n\n- Released change.\n'
+        untouched, changed = promote_unreleased(already_released, 'v1.2.3', release_date='2026-03-04')
+        self.assertFalse(changed)
+        self.assertEqual(untouched, already_released)
+        with self.assertRaises(ValueError):
+            promote_unreleased('## [Unreleased]\n\n## [1.2.2] - 2025-12-01\n\n- Earlier change.\n',
+                               'v1.2.3', release_date='2026-03-04')
 
 
 if __name__ == '__main__':
