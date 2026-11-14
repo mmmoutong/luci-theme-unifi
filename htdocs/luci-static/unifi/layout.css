@@ -1,0 +1,149 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Settings layout, separate from the measured widget styles in controls.css.
+ * LuCI supplies the form structure. Table pages keep the available width. */
+:root {
+	--uf-page-padding-block:20px;
+	--uf-page-padding-inline:24px;
+	--uf-settings-max-width:960px;
+	--uf-settings-group-gap:28px;
+	--uf-settings-title-gap:16px;
+	--uf-settings-row-height:40px;
+	--uf-settings-row-padding:4px;
+	--uf-settings-help-gap:4px;
+	--uf-settings-help-line-height:18px;
+	--uf-page-description-gap:8px;
+	--uf-page-content-gap:24px;
+}
+
+body.uf-theme:not(.uf-login):not(.uf-dashboard-page):not(.uf-clients-page) #maincontent.container {
+	padding:var(--uf-page-padding-block) var(--uf-page-padding-inline);
+}
+
+/* Cap the complete view, including its action bar, only for pure forms.
+ * Do not cap status tables, editable grids or forms containing tables. */
+body.uf-theme:not(.uf-login) #view:has(.cbi-map .cbi-value):not(:has(table,.table,.cbi-tblsection)) {
+	width:100%;
+	max-width:var(--uf-settings-max-width);
+}
+/* A mixed page may have a wide table and a normal form group beneath it. */
+body.uf-theme:not(.uf-login) .cbi-map .cbi-section:has(.cbi-value):not(:has(table,.table,.cbi-tblsection)) {
+	max-width:var(--uf-settings-max-width);
+}
+
+/* Native configuration groups use headings and whitespace, without a box
+ * around every group. Status cards and dashboard cards keep their layout. */
+body.uf-theme:not(.uf-login) .cbi-map :is(.cbi-section,.cbi-tblsection) {
+	border:0;
+	border-radius:0;
+	padding:0;
+	margin:0 0 var(--uf-settings-group-gap);
+	background:transparent;
+	box-shadow:none;
+}
+body.uf-theme:not(.uf-login) .cbi-map :is(.cbi-section,.cbi-tblsection):last-child {margin-bottom:0}
+body.uf-theme:not(.uf-login) .cbi-map .cbi-section .cbi-section {
+	border-top:1px solid var(--uf-line);
+	padding-top:var(--uf-settings-title-gap);
+	margin-top:var(--uf-settings-title-gap);
+}
+body.uf-theme:not(.uf-login) .cbi-map .cbi-section>h3,
+body.uf-theme:not(.uf-login) .cbi-map .cbi-section>.cbi-title>h3 {
+	margin-bottom:var(--uf-settings-title-gap);
+}
+
+/* Keep Save primary when it is the only commit action (e.g. a dialog).
+ * In the native apply + save combination, Apply is the single primary. */
+body.uf-theme .cbi-page-actions:has(.cbi-button-apply,.cbi-dropdown.cbi-button-negative) .cbi-button-save {
+	background:transparent;
+	border-color:transparent;
+	color:var(--uf-control-accent);
+}
+body.uf-theme .cbi-page-actions:has(.cbi-button-apply,.cbi-dropdown.cbi-button-negative) .cbi-button-save:hover {
+	background:var(--uf-control-selection);
+	border-color:transparent!important;
+	color:var(--uf-control-accent-hover);
+}
+body.uf-theme .cbi-page-actions:has(.cbi-button-apply,.cbi-dropdown.cbi-button-negative) .cbi-button-save:active {
+	background:transparent;
+	border-color:transparent;
+	color:var(--uf-control-accent-active);
+}
+body.uf-theme .cbi-page-actions:has(.cbi-button-apply,.cbi-dropdown.cbi-button-negative) .cbi-button-save:is(:disabled,[disabled],[aria-disabled=true]) {
+	background:transparent;
+	border-color:transparent;
+	color:var(--uf-control-accent-disabled);
+}
+body.uf-theme .cbi-page-actions .cbi-button-reset {color:var(--uf-control-muted)}
+/* LuCI changes the apply combo to negative when "Apply unchecked" is chosen. */
+body.uf-theme .cbi-page-actions .cbi-dropdown.cbi-button-negative {
+	background:var(--uf-control-danger);
+	border-color:var(--uf-control-danger);
+	color:#fff;
+}
+body.uf-theme .cbi-page-actions .cbi-dropdown.cbi-button-negative:hover {
+	background:var(--uf-control-danger-hover);
+	border-color:var(--uf-control-danger-hover)!important;
+	color:#fff;
+}
+body.uf-theme .cbi-page-actions .cbi-dropdown.cbi-button-negative:active {
+	background:var(--uf-control-danger-active);
+	border-color:var(--uf-control-danger-active);
+}
+body.uf-theme .cbi-page-actions .cbi-dropdown.cbi-button-negative:is(:disabled,[disabled],[aria-disabled=true]) {
+	background:var(--uf-control-danger-disabled);
+	border-color:var(--uf-control-danger-disabled);
+	color:#ffffffa3;
+}
+body.uf-theme .cbi-map .cbi-value:is([hidden],.hidden,.cbi-value-hidden) {display:none}
+
+/* Shared rhythm and text hierarchy for native configuration views. Long
+ * descriptions may grow; the 40px row is a minimum rather than a fixed box. */
+body.uf-theme:not(.uf-login) .cbi-map {margin-bottom:var(--uf-settings-group-gap)}
+body.uf-theme:not(.uf-login) .cbi-map .cbi-value {
+	min-height:var(--uf-settings-row-height);
+	padding:var(--uf-settings-row-padding) 0;
+}
+body.uf-theme:not(.uf-login) .cbi-map .cbi-value>.cbi-value-title {color:var(--uf-secondary)}
+body.uf-theme:not(.uf-login) :is(h2[name=content],.cbi-map>h2) {
+	font-size:20px;line-height:28px;font-weight:600;
+	margin:0 0 var(--uf-page-description-gap);color:var(--uf-control-text);
+}
+body.uf-theme:not(.uf-login) .cbi-map :is(.cbi-section>h3,.cbi-section>.cbi-title>h3) {
+	font-size:13px;line-height:20px;font-weight:600;color:var(--uf-control-text);
+}
+body.uf-theme:not(.uf-login) :is(.cbi-map-descr,.cbi-section-descr) {
+	font-size:12px;line-height:20px;color:var(--uf-muted);
+	margin:0 0 var(--uf-page-content-gap);
+}
+body.uf-theme:not(.uf-login) .cbi-map .cbi-value-description {
+	margin:var(--uf-settings-help-gap) 0 0;
+	font-size:11px;line-height:var(--uf-settings-help-line-height);color:var(--uf-muted);
+}
+body.uf-theme .cbi-map .cbi-value-error,
+body.uf-theme .cbi-map .cbi-value-error :is(.cbi-value-description,.cbi-value-title),
+body.uf-theme .cbi-map .cbi-value-description.cbi-value-error {color:var(--uf-control-danger)}
+body.uf-theme:not(.uf-login) .cbi-map .cbi-value.cbi-value-error>.cbi-value-title {color:var(--uf-control-danger)}
+body.uf-theme #tabmenu {margin-bottom:var(--uf-page-content-gap)}
+body.uf-theme #tabmenu ul.tabs {margin-bottom:0}
+body.uf-theme .cbi-map ul.cbi-tabmenu {margin-bottom:var(--uf-page-content-gap)}
+body.uf-theme .uf-client-title>.uf-muted,
+body.uf-theme :is(.uf-updated,.uf-client-result-count) {color:var(--uf-muted)}
+
+/* Define the two columns explicitly instead of inheriting the base theme's
+ * display mode. Hidden dependency fields keep their existing visibility. */
+@media(min-width:681px) {
+	body.uf-theme:not(.uf-login) .cbi-map .cbi-value:not([hidden]):not(.hidden):not(.cbi-value-hidden) {
+		display:flex;
+		flex-wrap:wrap;
+	}
+	body.uf-theme:not(.uf-login) .cbi-map .cbi-value-field {flex:1 1 0}
+}
+
+@media(max-width:680px) {
+	:root {
+		--uf-page-padding-block:16px;
+		--uf-page-padding-inline:12px;
+		--uf-settings-group-gap:24px;
+		--uf-settings-row-padding:6px;
+	}
+}

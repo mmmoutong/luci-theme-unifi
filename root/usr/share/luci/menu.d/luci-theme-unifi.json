@@ -1,0 +1,41 @@
+{
+  "admin/unifi-dashboard": {
+    "title": "Dashboard",
+    "order": 1,
+    "action": {
+      "type": "view",
+      "path": "unifi/dashboard"
+    },
+    "depends": {
+      "acl": [
+        "luci-theme-unifi"
+      ]
+    }
+  },
+  "admin/unifi-clients": {
+    "title": "Client Devices",
+    "order": 2,
+    "action": {
+      "type": "view",
+      "path": "unifi/clients"
+    },
+    "depends": {
+      "acl": [
+        "luci-theme-unifi-clients"
+      ]
+    }
+  },
+  "admin/system/unifi-theme": {
+    "title": "Unifi Theme Settings",
+    "order": 90,
+    "action": {
+      "type": "view",
+      "path": "unifi/settings"
+    },
+    "depends": {
+      "acl": [
+        "luci-theme-unifi-settings"
+      ]
+    }
+  }
+}

@@ -1,0 +1,41 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* Measured from UniFi Network 10.6.109's standalone account/login page. */
+body.uf-theme.uf-login {
+ margin:0;padding:0;background:#151618;color:#969ba3;
+ font-family:Lato,'Helvetica Neue',Helvetica,Arial,'PingFang SC','Microsoft YaHei',sans-serif;
+ font-size:12px;font-weight:400;line-height:1;color-scheme:dark;
+ --uf-control-accent:#929698;--uf-control-focus:#929698;
+}
+.uf-login .uf-login-screen {
+ display:flex;align-items:center;justify-content:center;
+ min-height:100vh;min-height:max(600px,100svh);padding:50px 20px;
+ background:linear-gradient(#002759,#151618);
+}
+.uf-login .uf-login-panel {width:340px;max-width:100%;margin:0;padding:0;border:0;background:none;box-shadow:none}
+.uf-login .uf-login-logo {display:flex;justify-content:center}
+.uf-login .uf-login-logo img {display:block;width:152px;height:152px;max-width:100%;object-fit:contain}
+.uf-login .uf-login-version {margin:0 0 24px;text-align:center;font-size:12px;line-height:12px;overflow-wrap:anywhere}
+.uf-login .uf-login-content {display:flex;align-items:center;min-height:198px}
+.uf-login .uf-login-form {width:100%;margin:0;padding:0}
+.uf-login .uf-login-field {margin:0 0 24px}
+.uf-login .uf-login-field>label {display:block;margin:0 0 5px;padding:0;font-size:12px;font-weight:400;line-height:18px;color:#969ba3}
+body.uf-theme.uf-login .uf-login-field>input {
+ display:block;width:100%;height:34px;min-height:34px;margin:0;padding:7px 8px 8px;
+ border:1px solid #3e494f;border-radius:0;background:transparent;color:#fff;
+ font:inherit;line-height:normal;outline:0;
+}
+body.uf-theme.uf-login .uf-login-field>input:hover {background:transparent;border-color:#707780}
+body.uf-theme.uf-login .uf-login-field>input:focus {background:transparent;border-color:#929698!important}
+body.uf-theme.uf-login .uf-login-field>input[aria-invalid=true] {border-color:#e36b75!important}
+body.uf-theme.uf-login .uf-login-submit {display:block;position:relative;width:100%;height:34px;min-height:34px;margin:0;padding:10px 13px;border:1px solid #006bf5;border-radius:3px;background:#006fff;color:#fff;font-family:inherit;font-size:10px;font-weight:400;line-height:normal;text-align:center;text-transform:uppercase;cursor:pointer}
+body.uf-theme.uf-login .uf-login-submit:hover {background:#005fe0;border-color:#005bdb}
+body.uf-theme.uf-login .uf-login-submit:active {background:#0054c7}
+body.uf-theme.uf-login .uf-login-submit:focus-visible {outline:2px solid #b7bcc2;outline-offset:3px}
+body.uf-theme.uf-login .uf-login-submit:disabled {opacity:.65;cursor:wait}
+.uf-login .uf-login-error {margin:0 0 20px;padding:10px 12px;border:1px solid #af4954;border-radius:3px;background:#d645501a;color:#ffa0a9;font-size:12px;line-height:18px;overflow-wrap:anywhere}
+.uf-login .uf-login-noscript {margin:20px 0 0;color:#b7bcc2;font-size:12px;line-height:18px}
+@media(max-width:480px) {
+ .uf-login .uf-login-screen {padding-inline:10px}
+ .uf-login .uf-login-panel {width:300px}
+ body.uf-theme.uf-login .uf-login-field>input {font-size:16px}
+}

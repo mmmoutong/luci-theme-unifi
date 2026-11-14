@@ -1,0 +1,62 @@
+// Preview fixtures validate the browser flow; the real store is tested by activity-store.uc.
+const assert=require('node:assert/strict');
+const {chromium}=require(process.env.PLAYWRIGHT_MODULE||'playwright');
+const base=process.env.UNIFI_PREVIEW_URL||'http://127.0.0.1:8765';
+(async()=>{
+ const browser=await chromium.launch({headless:true,...(process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE?{executablePath:process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE}:{})});
+ const page=await browser.newPage({viewport:{width:1440,height:1000}}), errors=[];
+ page.on('pageerror',e=>errors.push(e.message));
+ try {
+  await page.goto(base+'/?page=settings');
+  const toggle=page.getByLabel('总是采样网络活动',{exact:true});
+  await toggle.waitFor(); assert.equal(await toggle.isChecked(),true);
+  await page.screenshot({path:require('node:path').resolve(__dirname,'../artifacts/activity-settings.png'),fullPage:true});
+  await page.goto(base+'/?page=overview');
+  await page.waitForFunction(()=>modules['unifi.overview']?.history.length>200);
+  assert.equal(await page.evaluate(()=>timers[0].interval),1);
+  assert.equal(await page.locator('.uf-update-notice').textContent(),'');
+  const motion=await page.evaluate(async()=>{
+   const d=modules['unifi.overview'],scheduler=await L.require('poll');scheduler.remove(d.poller);
+   while(d.busy)await new Promise(resolve=>setTimeout(resolve,10));
+   const layer=d.refs.series,path=layer.querySelector('path'),crosshair=d.refs.crosshair;
+   d.busy=true;
+   const count=d.history.length,shape=path.getAttribute('d');let mutations=0;
+   const observer=new MutationObserver(records=>{mutations+=records.length;});observer.observe(d.refs.chart,{childList:true,subtree:true});
+   const frames=[];
+   await new Promise(resolve=>{function sample(){frames.push({time:Date.now(),x:parseFloat(layer.getAttribute('transform').slice(10))});if(frames.length<12)requestAnimationFrame(sample);else resolve();}requestAnimationFrame(sample);});
+   observer.disconnect();d.busy=false;scheduler.add(d.poller,1);
+   const samePath=path===layer.querySelector('path'),sameShape=shape===path.getAttribute('d'),sameHistory=count===d.history.length;
+   d.drawChart();
+   return {frames,mutations,samePath,sameShape,sameHistory,reusedAfterRedraw:path===layer.querySelector('path')&&crosshair===d.refs.crosshair};
+  });
+  assert.equal(motion.mutations,0);assert.equal(motion.samePath,true);assert.equal(motion.sameShape,true);assert.equal(motion.sameHistory,true);assert.equal(motion.reusedAfterRedraw,true);
+  assert.ok(motion.frames[0].x>motion.frames.at(-1).x);
+  for(let i=1;i<motion.frames.length;i++)assert.ok(Math.abs((motion.frames[i].x-motion.frames[i-1].x)+(motion.frames[i].time-motion.frames[i-1].time)/300)<0.025);
+  await page.getByRole('button',{name:'暂停更新',exact:true}).click();
+  const paused=await page.locator('.uf-series-layer').getAttribute('transform');
+  await page.waitForTimeout(150);assert.equal(await page.locator('.uf-series-layer').getAttribute('transform'),paused);
+  await page.getByRole('button',{name:'继续更新',exact:true}).click();
+  await page.emulateMedia({reducedMotion:'reduce'});
+  await page.waitForFunction(()=>modules['unifi.overview'].chartFrame===null);
+  await page.emulateMedia({reducedMotion:'no-preference'});
+  await page.waitForFunction(()=>modules['unifi.overview'].chartFrame!==null);
+  const oldest=await page.evaluate(()=>modules['unifi.overview'].history[0].time);
+  const firstCursor=await page.evaluate(()=>modules['unifi.overview'].activityState.cursor);
+  await page.waitForFunction(cursor=>modules['unifi.overview'].activityState.cursor>cursor,firstCursor);
+  await page.reload();
+  await page.waitForFunction(()=>modules['unifi.overview']?.history.length>200);
+  assert.ok(Math.abs(await page.evaluate(()=>modules['unifi.overview'].history[0].time)-oldest)<4000);
+  await page.getByRole('combobox',{name:'流量采集接口'}).selectOption('eth1');
+  await page.waitForFunction(()=>modules['unifi.overview'].activityState&&modules['unifi.overview'].selected==='eth1'&&modules['unifi.overview'].history.length>200);
+  await page.screenshot({path:require('node:path').resolve(__dirname,'../artifacts/activity-dashboard.png'),fullPage:true});
+  await page.goto(base+'/?page=settings');await page.getByLabel('总是采样网络活动',{exact:true}).uncheck();
+  await Promise.all([page.waitForNavigation(),page.getByRole('button',{name:'保存并应用',exact:true}).click()]);
+  await page.getByLabel('总是采样网络活动',{exact:true}).waitFor();
+  assert.equal(await page.getByLabel('总是采样网络活动',{exact:true}).isChecked(),false);
+  await page.goto(base+'/?page=overview');await page.locator('#uf-dashboard').waitFor();
+  assert.equal(await page.evaluate(()=>modules['unifi.settings'].get('activity_always')),'0');
+  assert.equal(await page.evaluate(()=>timers[0].interval),1);
+  assert.deepEqual(errors,[]);
+  console.log('Activity browser checks passed: sampling defaults on, explicit disable persists, continuous motion between samples without rebuilding paths, pause/resume and reduced motion, 1s updates, history restored on refresh, interface switch.');
+ } finally { await browser.close(); }
+})().catch(e=>{console.error(e);process.exitCode=1;});

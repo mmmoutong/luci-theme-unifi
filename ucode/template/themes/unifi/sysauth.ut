@@ -1,0 +1,33 @@
+{#
+ Copyright 2022 Jo-Philipp Wich <jo@mein.io>
+ Licensed to the public under the Apache License 2.0.
+-#}
+
+{% include('header', { blank_page: true }) %}
+
+<main class="uf-login-screen">
+	<section class="uf-login-panel" aria-label="{{ _('Log in') }}">
+		<div class="uf-login-logo"><img src="{{ media }}/login-wordmark.svg" width="152" height="152" alt="Unifi"></div>
+		<div class="uf-login-version">{{ striptags(`${version.distname} ${version.distversion}`) }}</div>
+		<div class="uf-login-content">
+			<form method="post" class="uf-login-form">
+				{% if (fuser): %}
+				<p class="uf-login-error" id="uf-login-error" role="alert">{{ _('Invalid username and/or password! Please try again.') }}</p>
+				{% endif %}
+				<div class="uf-login-field">
+					<label for="luci_username">{{ _('Username') }}</label>
+					<input name="luci_username" id="luci_username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required value="{{ entityencode(duser, true) }}"{% if (fuser): %} aria-invalid="true" aria-describedby="uf-login-error"{% endif %}>
+				</div>
+				<div class="uf-login-field">
+					<label for="luci_password">{{ _('Password') }}</label>
+					<input name="luci_password" id="luci_password" type="password" autocomplete="current-password" autofocus{% if (fuser): %} aria-invalid="true" aria-describedby="uf-login-error"{% endif %}>
+				</div>
+				<button class="uf-login-submit" type="submit" data-busy-label="{{ _('Logging in…') }}">{{ _('Log in') }}</button>
+				<noscript><p class="uf-login-noscript">{{ _('You must enable JavaScript in your browser or LuCI will not work properly.') }}</p></noscript>
+			</form>
+		</div>
+	</section>
+</main>
+<script src="{{ media }}/login.js?v=0.8.2" defer></script>
+
+{% include('footer', { blank_page: true }) %}

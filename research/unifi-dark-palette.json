@@ -1,0 +1,365 @@
+{
+  "source": "User-supplied UniFi dark dashboard screenshot",
+  "image_size": [
+    3104,
+    2046
+  ],
+  "image_sha256": "ac2d18f40974650499c55e81399f0a2ace02daf7e75cca4e8cccbcb72652dcbf",
+  "method": "Exact RGB histogram in original PNG regions; no resizing, quantization or averaging.",
+  "measurements": {
+    "canvas": {
+      "hex": "#131416",
+      "box": [
+        900,
+        1500,
+        2800,
+        1950
+      ],
+      "pixel_filter": "all",
+      "matching_pixels": 855000,
+      "top_colors": [
+        {
+          "hex": "#131416",
+          "count": 855000
+        }
+      ]
+    },
+    "header": {
+      "hex": "#292b2f",
+      "box": [
+        110,
+        0,
+        3000,
+        90
+      ],
+      "pixel_filter": "all",
+      "matching_pixels": 258762,
+      "top_colors": [
+        {
+          "hex": "#292b2f",
+          "count": 258762
+        },
+        {
+          "hex": "#b7bcc2",
+          "count": 535
+        },
+        {
+          "hex": "#404248",
+          "count": 62
+        },
+        {
+          "hex": "#75797f",
+          "count": 55
+        },
+        {
+          "hex": "#6f7177",
+          "count": 30
+        },
+        {
+          "hex": "#3b3e43",
+          "count": 30
+        },
+        {
+          "hex": "#2a2c30",
+          "count": 16
+        },
+        {
+          "hex": "#b6bbc1",
+          "count": 16
+        }
+      ]
+    },
+    "card_border": {
+      "hex": "#232426",
+      "box": [
+        127,
+        140,
+        130,
+        410
+      ],
+      "pixel_filter": "all",
+      "matching_pixels": 540,
+      "top_colors": [
+        {
+          "hex": "#232426",
+          "count": 540
+        },
+        {
+          "hex": "#131416",
+          "count": 270
+        }
+      ]
+    },
+    "graph_grid": {
+      "hex": "#34383d",
+      "box": [
+        780,
+        248,
+        2985,
+        850
+      ],
+      "pixel_filter": "all",
+      "matching_pixels": 45896,
+      "top_colors": [
+        {
+          "hex": "#131416",
+          "count": 1211399
+        },
+        {
+          "hex": "#34383d",
+          "count": 45896
+        },
+        {
+          "hex": "#1f2225",
+          "count": 9666
+        },
+        {
+          "hex": "#191b1e",
+          "count": 8536
+        },
+        {
+          "hex": "#25282b",
+          "count": 6523
+        },
+        {
+          "hex": "#2c2e32",
+          "count": 4600
+        },
+        {
+          "hex": "#07397d",
+          "count": 4056
+        },
+        {
+          "hex": "#dee0e3",
+          "count": 2015
+        }
+      ]
+    },
+    "control_background": {
+      "hex": "#1c1d1f",
+      "box": [
+        1890,
+        145,
+        2210,
+        210
+      ],
+      "pixel_filter": "all",
+      "matching_pixels": 18579,
+      "top_colors": [
+        {
+          "hex": "#1c1d1f",
+          "count": 18579
+        },
+        {
+          "hex": "#dee0e3",
+          "count": 392
+        },
+        {
+          "hex": "#131416",
+          "count": 361
+        },
+        {
+          "hex": "#64bde4",
+          "count": 46
+        },
+        {
+          "hex": "#c6c7ca",
+          "count": 44
+        },
+        {
+          "hex": "#b47ddf",
+          "count": 44
+        },
+        {
+          "hex": "#d9dbdd",
+          "count": 39
+        },
+        {
+          "hex": "#1e1f21",
+          "count": 37
+        }
+      ]
+    },
+    "primary_text": {
+      "hex": "#dee0e3",
+      "box": [
+        154,
+        535,
+        661,
+        612
+      ],
+      "pixel_filter": "foreground",
+      "matching_pixels": 1010,
+      "top_colors": [
+        {
+          "hex": "#dee0e3",
+          "count": 1010
+        },
+        {
+          "hex": "#b7bcc2",
+          "count": 466
+        },
+        {
+          "hex": "#919295",
+          "count": 55
+        },
+        {
+          "hex": "#8b8d8f",
+          "count": 37
+        },
+        {
+          "hex": "#adaeb1",
+          "count": 34
+        },
+        {
+          "hex": "#8f9193",
+          "count": 33
+        },
+        {
+          "hex": "#94989e",
+          "count": 33
+        },
+        {
+          "hex": "#8a8b8e",
+          "count": 25
+        }
+      ]
+    },
+    "secondary_text": {
+      "hex": "#b7bcc2",
+      "box": [
+        450,
+        270,
+        665,
+        305
+      ],
+      "pixel_filter": "foreground",
+      "matching_pixels": 267,
+      "top_colors": [
+        {
+          "hex": "#b7bcc2",
+          "count": 267
+        },
+        {
+          "hex": "#83878d",
+          "count": 18
+        },
+        {
+          "hex": "#9ea3a9",
+          "count": 15
+        },
+        {
+          "hex": "#9a9fa5",
+          "count": 10
+        },
+        {
+          "hex": "#b6bbc2",
+          "count": 9
+        },
+        {
+          "hex": "#a9adb4",
+          "count": 7
+        },
+        {
+          "hex": "#a2a6ac",
+          "count": 6
+        },
+        {
+          "hex": "#9ea2a8",
+          "count": 5
+        }
+      ]
+    },
+    "accent_blue": {
+      "hex": "#4797ff",
+      "box": [
+        756,
+        156,
+        850,
+        200
+      ],
+      "pixel_filter": "blue",
+      "matching_pixels": 151,
+      "top_colors": [
+        {
+          "hex": "#4797ff",
+          "count": 151
+        },
+        {
+          "hex": "#4084de",
+          "count": 11
+        },
+        {
+          "hex": "#438dec",
+          "count": 9
+        },
+        {
+          "hex": "#438ceb",
+          "count": 8
+        },
+        {
+          "hex": "#428cea",
+          "count": 7
+        },
+        {
+          "hex": "#4693f7",
+          "count": 5
+        },
+        {
+          "hex": "#4080d7",
+          "count": 4
+        },
+        {
+          "hex": "#3d7bcf",
+          "count": 3
+        }
+      ]
+    },
+    "selected_background": {
+      "hex": "#04264d",
+      "box": [
+        320,
+        1195,
+        398,
+        1228
+      ],
+      "pixel_filter": "all",
+      "matching_pixels": 2223,
+      "top_colors": [
+        {
+          "hex": "#04264d",
+          "count": 2223
+        },
+        {
+          "hex": "#131416",
+          "count": 110
+        },
+        {
+          "hex": "#4797ff",
+          "count": 55
+        },
+        {
+          "hex": "#2863ae",
+          "count": 19
+        },
+        {
+          "hex": "#1d5292",
+          "count": 9
+        },
+        {
+          "hex": "#0b1d34",
+          "count": 8
+        },
+        {
+          "hex": "#134075",
+          "count": 7
+        },
+        {
+          "hex": "#111720",
+          "count": 6
+        }
+      ]
+    }
+  },
+  "limits": "Rendered screenshot pixels, not live computed CSS. Hover, errors and modal surfaces were not shown."
+}

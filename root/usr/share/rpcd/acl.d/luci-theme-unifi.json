@@ -1,0 +1,84 @@
+{
+  "luci-theme-unifi": {
+    "description": "Read-only dashboard metrics for Unifi theme",
+    "read": {
+      "file": {
+        "/proc/stat": [
+          "read"
+        ],
+        "/proc/sys/net/netfilter/nf_conntrack_count": [
+          "read"
+        ],
+        "/proc/sys/net/netfilter/nf_conntrack_max": [
+          "read"
+        ]
+      },
+      "ubus": {
+        "unifi.activity": [
+          "history"
+        ],
+        "file": [
+          "read"
+        ],
+        "system": [
+          "board",
+          "info"
+        ],
+        "network.interface": [
+          "dump"
+        ],
+        "network.device": [
+          "status"
+        ],
+        "luci-rpc": [
+          "getNetworkDevices",
+          "getDHCPLeases",
+          "getBoardJSON",
+          "getWirelessDevices",
+          "getHostHints"
+        ]
+      }
+    }
+  },
+  "luci-theme-unifi-settings": {
+    "description": "Read and save Unifi theme preferences",
+    "read": {"uci": ["unifi"]},
+    "write": {"uci": ["unifi"]}
+  },
+  "luci-theme-unifi-clients": {
+    "description": "Read client inventory, reservations and Wi-Fi associations",
+    "read": {
+      "file": {
+        "/proc/net/arp": [
+          "read"
+        ]
+      },
+      "uci": [
+        "dhcp",
+        "network",
+        "wireless"
+      ],
+      "ubus": {
+        "file": [
+          "read"
+        ],
+        "uci": [
+          "get"
+        ],
+        "network.interface": [
+          "dump"
+        ],
+        "luci-rpc": [
+          "getHostHints",
+          "getDHCPLeases",
+          "getNetworkDevices",
+          "getWirelessDevices",
+          "getBoardJSON"
+        ],
+        "iwinfo": [
+          "assoclist"
+        ]
+      }
+    }
+  }
+}

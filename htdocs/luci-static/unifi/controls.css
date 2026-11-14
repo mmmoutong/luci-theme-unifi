@@ -1,0 +1,330 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+/* UniFi Network 10.6.109: measured in the user's reference UI.
+ * See research/control-reference and research/notes/control-adaptation.md.
+ * LuCI still owns widget DOM, validation, keyboard handling and persistence. */
+:root {
+	--uf-control-bg:rgba(33,35,39,.04);
+	--uf-control-hover:rgba(33,35,39,.07);
+	--uf-control-disabled:rgba(33,35,39,.02);
+	--uf-control-text:#212327;
+	--uf-control-placeholder:#c2c6cb;
+	--uf-control-border:#c2c6cb;
+	--uf-control-border-disabled:#eef0f1;
+	--uf-control-accent:#006fff;
+	--uf-control-accent-hover:#338bff;
+	--uf-control-accent-active:#0058cc;
+	--uf-control-accent-disabled:#99c5ff;
+	--uf-control-focus:#66a8ff;
+	--uf-control-selection:#e6f1ff;
+	--uf-control-danger:#f0383b;
+	--uf-control-danger-hover:#f36267;
+	--uf-control-danger-active:#c12f34;
+	--uf-control-danger-disabled:#f9aeb1;
+	--uf-control-muted:#808893;
+	--uf-control-neutral:#676f79;
+	--uf-control-track:#f4f5f6;
+	--uf-control-selected:#fff;
+	--uf-control-popup:#fff;
+	--uf-control-popup-line:#dee0e3;
+	--uf-control-overlay:rgba(20,20,20,.4);
+	--uf-control-modal-shadow:0 12px 48px rgba(33,35,39,.12),0 0 1px rgba(33,35,39,.08);
+	--uf-control-tooltip-shadow:0 8px 24px rgba(33,35,39,.08),0 0 1px rgba(33,35,39,.08);
+	--uf-control-switch-track:#dee0e3;
+	--uf-control-switch-disabled:#f4f5f6;
+}
+html[data-darkmode=true] {
+	--uf-control-bg:rgba(249,250,250,.04);
+	--uf-control-hover:rgba(249,250,250,.07);
+	--uf-control-disabled:rgba(249,250,250,.02);
+	--uf-control-text:#f9fafa;
+	--uf-control-placeholder:#737c87;
+	--uf-control-border:#737c87;
+	--uf-control-border-disabled:#34383d;
+	--uf-control-accent:#4797ff;
+	--uf-control-accent-hover:#277ff1;
+	--uf-control-accent-active:#80b7ff;
+	--uf-control-accent-disabled:#0b4ead;
+	--uf-control-focus:#0e65d8;
+	--uf-control-selection:#05254d;
+	--uf-control-danger:#ee6368;
+	--uf-control-danger-hover:#da5257;
+	--uf-control-danger-active:#f49a9d;
+	--uf-control-danger-disabled:#913034;
+	--uf-control-muted:#b7bcc2;
+	--uf-control-neutral:#cbced2;
+	--uf-control-track:#282b2f;
+	--uf-control-selected:#34383d;
+	--uf-control-popup:#1c1e21;
+	--uf-control-popup-line:#34383d;
+	--uf-control-overlay:rgba(20,20,20,.6);
+	--uf-control-modal-shadow:0 12px 48px #000,0 0 1px rgba(249,250,250,.08);
+	--uf-control-tooltip-shadow:0 8px 24px #000,0 0 1px rgba(249,250,250,.08);
+	--uf-control-switch-track:#42474d;
+	--uf-control-switch-disabled:#282b2f;
+}
+
+/* Remove the base theme's gradients/glow on the parts it draws as well.
+ * !important is confined to properties Bootstrap itself forces with it. */
+body.uf-theme :is(input,select,textarea,button,.btn,.cbi-button,.cbi-select,.cbi-dropdown,.cbi-dynlist>.item),
+body.uf-theme :is(input[type=checkbox],input[type=radio],.cbi-dynlist>.item)::before,
+body.uf-theme :is(input[type=checkbox],input[type=radio],.cbi-dynlist>.item)::after {
+	box-shadow:none!important;
+	text-shadow:none;
+}
+body.uf-theme :focus-visible {outline:2px solid var(--uf-control-accent);outline-offset:2px}
+
+/* Text controls: 32px secondary fields, 4px radius, 8px text inset.
+ * Native select popups are deliberately retained. Rich LuCI selectors keep
+ * their existing menus as well; this stylesheet does not replace their DOM. */
+body.uf-theme :is(input:not([type]),input[type=text],input[type=password],input[type=number],input[type=search],input[type=url],input[type=email],input[type=tel],input[type=date],input[type=time],input[type=datetime-local],select,textarea,.cbi-input-text,.cbi-input-select,.cbi-select,.cbi-dropdown:where(:not(.btn):not(.cbi-button))) {
+	background:var(--uf-control-bg);
+	color:var(--uf-control-text);
+	border:1px solid transparent;
+	border-radius:4px;
+	min-height:32px;
+	padding:5px 7px;
+	max-width:100%;
+	font-size:13px;
+	font-weight:400;
+	line-height:20px;
+	transition:background-color 50ms,border-color 50ms;
+}
+body.uf-theme select {appearance:auto}
+body.uf-theme textarea {padding:7px;resize:vertical;line-height:20px}
+body.uf-theme :is(input:not([type]),input[type=text],input[type=password],input[type=number],input[type=search],input[type=url],input[type=email],input[type=tel],input[type=date],input[type=time],input[type=datetime-local],select,textarea,.cbi-select,.cbi-dropdown:where(:not(.btn):not(.cbi-button))):hover:not(:disabled):not([disabled]):not([readonly]) {background:var(--uf-control-hover)}
+body.uf-theme :is(input,select,textarea,.cbi-select,.cbi-dropdown):focus,
+body.uf-theme .cbi-select.focus,
+body.uf-theme .cbi-dropdown[open] {
+	border-color:var(--uf-control-accent)!important;
+	outline:0;
+}
+body.uf-theme :is(input,select,textarea)::placeholder {color:var(--uf-control-placeholder);opacity:1}
+body.uf-theme :is(input,select,textarea):disabled,
+body.uf-theme :is(.cbi-select,.cbi-dropdown)[disabled] {
+	background:var(--uf-control-disabled);
+	color:var(--uf-control-placeholder);
+	border-color:transparent;
+	opacity:1;
+	cursor:default;
+}
+body.uf-theme :is(input,textarea)[readonly][readonly] {background:transparent;border-color:transparent;color:var(--uf-control-text)}
+body.uf-theme :is(input,select,textarea,.cbi-select,.cbi-dropdown).cbi-input-invalid,
+body.uf-theme :is(input,select,textarea,.cbi-select,.cbi-dropdown)[aria-invalid=true] {
+	border-color:var(--uf-control-danger)!important;
+	background:var(--uf-control-bg);
+}
+body.uf-theme :is(.cbi-value-error,.cbi-value-error>*,.cbi-value-error .cbi-value-description) {color:var(--uf-control-danger)}
+
+/* Checkboxes/radios: paint the actual input, remove Bootstrap's ::before.
+ * The check is an original CSS stroke; the radio dot is exactly 6px. */
+body.uf-theme input:is([type=checkbox],[type=radio]) {
+	appearance:none;
+	-webkit-appearance:none;
+	position:relative;
+	display:inline-block;
+	flex:0 0 16px;
+	width:16px;
+	height:16px;
+	min-height:16px;
+	padding:0;
+	margin:0 6px 0 0;
+	vertical-align:middle;
+	border:1px solid var(--uf-control-border);
+	border-radius:4px;
+	background:transparent;
+	color:#fff;
+	opacity:1;
+	cursor:pointer;
+	transition:color .2s linear;
+}
+body.uf-theme input:is([type=checkbox],[type=radio])::before {content:none}
+body.uf-theme input:is([type=checkbox],[type=radio])::after {
+	content:'';
+	display:none;
+	position:absolute;
+	background:none;
+	mask:none;
+	-webkit-mask:none;
+	border:0;
+	border-radius:0;
+	padding:0;
+	margin:0;
+}
+body.uf-theme input[type=checkbox]:is(:checked,:indeterminate) {background:var(--uf-control-accent);border-color:var(--uf-control-accent)}
+body.uf-theme input[type=checkbox]:checked::after {
+	display:block;
+	left:4px;
+	top:1px;
+	width:5px;
+	height:9px;
+	border:solid currentColor;
+	border-width:0 1.5px 1.5px 0;
+	transform:rotate(45deg);
+}
+body.uf-theme input[type=checkbox]:indeterminate::after {display:block;left:3px;top:6px;width:8px;height:2px;background:currentColor;transform:none;border:0}
+body.uf-theme input[type=radio] {border-radius:50%}
+body.uf-theme input[type=radio]:checked {background:transparent;border-color:var(--uf-control-accent)}
+body.uf-theme input[type=radio]:checked::after {display:block;left:50%;top:50%;width:6px;height:6px;border-radius:50%;background:var(--uf-control-accent);transform:translate(-50%,-50%)}
+body.uf-theme input:is([type=checkbox],[type=radio]):focus {outline:0;border-color:var(--uf-control-accent)!important}
+body.uf-theme input:is([type=checkbox],[type=radio]):focus-visible {outline:0;border-width:2px;border-color:var(--uf-control-focus)!important}
+body.uf-theme input:is([type=checkbox],[type=radio]):disabled {background:transparent;border-color:var(--uf-control-border-disabled);opacity:1;cursor:default}
+body.uf-theme input[type=checkbox]:disabled:is(:checked,:indeterminate) {background:var(--uf-control-accent-disabled);border-color:var(--uf-control-accent-disabled);color:#ffffff70}
+body.uf-theme input[type=radio]:disabled:checked {border-color:var(--uf-control-accent-disabled)}
+body.uf-theme input[type=radio]:disabled:checked::after {background:var(--uf-control-accent-disabled)}
+body.uf-theme input:is([type=checkbox],[type=radio]):disabled::after {opacity:1}
+body.uf-theme .uf-devices-table .uf-client-check input {width:16px;height:16px;margin:0}
+body.uf-theme :is(.cbi-checkbox,.cbi-radio) {gap:6px;min-height:24px;height:auto;align-items:center}
+body.uf-theme :is(.cbi-checkbox,.cbi-radio)>input {margin:0}
+
+/* Optional switch semantics are explicit. Ordinary LuCI flags stay checkboxes. */
+body.uf-theme input[type=checkbox][role=switch] {width:32px;flex-basis:32px;border:0;border-radius:16px;background:var(--uf-control-switch-track)}
+body.uf-theme input[type=checkbox][role=switch]::after {display:block;left:1px;top:1px;width:14px;height:14px;border:0;border-radius:50%;background:#fff;transform:none}
+body.uf-theme input[type=checkbox][role=switch]:checked {background:var(--uf-control-accent)}
+body.uf-theme input[type=checkbox][role=switch]:checked::after {left:17px}
+body.uf-theme input[type=checkbox][role=switch]:disabled {background:var(--uf-control-switch-disabled);opacity:1}
+body.uf-theme input[type=checkbox][role=switch]:disabled:checked {background:var(--uf-control-accent-disabled)}
+
+/* Buttons use the reference's primary / secondary / danger treatments.
+ * A repeated class gives this rule equal specificity to the base theme's
+ * save/apply sibling rule, without !important on normal button colors. */
+body.uf-theme :is(.btn,.cbi-button,.uf-secondary-button,.uf-primary-button,input[type=button],input[type=submit],input[type=reset]) {
+	display:inline-flex;
+	align-items:center;
+	justify-content:center;
+	gap:4px;
+	min-height:30px;
+	padding:4px 11px;
+	border:1px solid transparent;
+	border-radius:4px;
+	background:transparent;
+	color:var(--uf-control-accent);
+	font-family:inherit;
+	font-size:13px;
+	font-weight:400;
+	letter-spacing:.25px;
+	line-height:20px;
+	white-space:nowrap;
+	cursor:pointer;
+	transition:background-color .15s,color .15s;
+}
+body.uf-theme :is(.btn,.cbi-button,.uf-secondary-button,input[type=button],input[type=submit],input[type=reset]):hover {background:var(--uf-control-selection);color:var(--uf-control-accent-hover);border-color:transparent!important}
+body.uf-theme :is(.btn,.cbi-button,.uf-secondary-button,input[type=button],input[type=submit],input[type=reset]):active {background:transparent;color:var(--uf-control-accent-active)}
+body.uf-theme .uf-primary-button,
+body.uf-theme.uf-theme :is(.cbi-button-apply,.cbi-button-save,.cbi-button-positive,.cbi-button-add) {background:var(--uf-control-accent);border-color:var(--uf-control-accent);color:#fff}
+body.uf-theme .uf-primary-button:hover,
+body.uf-theme.uf-theme :is(.cbi-button-apply,.cbi-button-save,.cbi-button-positive,.cbi-button-add):hover {background:var(--uf-control-accent-hover);border-color:var(--uf-control-accent-hover)!important;color:#fff}
+body.uf-theme .uf-primary-button:active,
+body.uf-theme.uf-theme :is(.cbi-button-apply,.cbi-button-save,.cbi-button-positive,.cbi-button-add):active {background:var(--uf-control-accent-active);border-color:var(--uf-control-accent-active);color:#fff}
+body.uf-theme :is(.cbi-button-negative,.cbi-button-remove) {background:transparent;color:var(--uf-control-danger);border-color:transparent}
+body.uf-theme :is(.cbi-button-negative,.cbi-button-remove):hover {background:var(--uf-control-bg);color:var(--uf-control-danger-hover)}
+body.uf-theme :is(.cbi-button-negative,.cbi-button-remove):active {color:var(--uf-control-danger-active)}
+body.uf-theme :is(.cbi-button-reset,.cbi-button-neutral) {color:var(--uf-control-neutral)}
+body.uf-theme :is(.cbi-button-reset,.cbi-button-neutral):hover {background:var(--uf-control-bg);color:var(--uf-control-text)}
+body.uf-theme :is(button,input[type=button],input[type=submit],input[type=reset],.btn,.cbi-button):is(:disabled,[disabled],[aria-disabled=true]) {opacity:1;cursor:default;color:var(--uf-control-placeholder);pointer-events:none}
+body.uf-theme .uf-primary-button:disabled,
+body.uf-theme.uf-theme :is(.cbi-button-apply,.cbi-button-save,.cbi-button-positive,.cbi-button-add):is(:disabled,[disabled],[aria-disabled=true]) {background:var(--uf-control-accent-disabled);border-color:var(--uf-control-accent-disabled);color:#ffffffa3}
+body.uf-theme :is(.cbi-button-negative,.cbi-button-remove):is(:disabled,[disabled]) {color:var(--uf-control-danger-disabled);background:transparent}
+body.uf-theme .cbi-page-actions {display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:16px 0;border-top:1px solid var(--uf-line);margin-top:16px;background:var(--uf-surface)}
+body.uf-theme .cbi-page-actions>:is(.btn,.cbi-button) {min-height:36px;padding:5px 15px;line-height:24px}
+body.uf-theme .cbi-dropdown.cbi-button {padding:0;min-height:30px}
+body.uf-theme .cbi-dropdown.cbi-button>ul:not(.dropdown) {margin:0!important;padding:4px 12px}
+body.uf-theme .cbi-page-actions>.cbi-dropdown.cbi-button {padding:0;min-height:36px}
+body.uf-theme .cbi-page-actions>.cbi-dropdown.cbi-button>ul:not(.dropdown) {padding:5px 15px;line-height:24px}
+body.uf-theme .cbi-dropdown.cbi-button>.open {align-self:stretch;border-color:#ffffff40;padding:0 8px;margin:0}
+body.uf-theme .cbi-dropdown.cbi-button>ul>li {color:inherit}
+body.uf-theme .cbi-dropdown.cbi-button[open]>ul.dropdown>li {color:var(--uf-control-text)}
+
+/* Native field grouping matches UniFi's compact left-aligned rows. */
+body.uf-theme .cbi-value {padding:4px 0;min-height:40px;border:0;margin-bottom:0;align-items:flex-start}
+body.uf-theme .cbi-value>.cbi-value-title {flex:0 0 240px;width:240px;text-align:left;padding:6px 16px 0 0;font-size:13px;font-weight:400;line-height:20px;color:var(--uf-control-muted)}
+body.uf-theme .cbi-value-field {min-width:0;min-height:32px;margin-left:16px;line-height:24px}
+body.uf-theme .cbi-value-field>input:not([type=checkbox]):not([type=radio]):not([type=hidden]),
+body.uf-theme .cbi-value-field>select {width:345px;max-width:100%}
+body.uf-theme .cbi-value-description {font-size:11px;line-height:20px;color:var(--uf-control-muted);margin:2px 0 0}
+body.uf-theme .cbi-value-description:not(:empty)::before {content:none}
+
+/* LuCI dynamic list DOM and add/remove events are preserved. */
+body.uf-theme .cbi-dynlist {display:inline-flex;flex-direction:column;gap:4px;min-width:0;width:345px;max-width:100%}
+body.uf-theme .cbi-dynlist>.item {background:var(--uf-control-bg);border:1px solid transparent;border-radius:4px;color:var(--uf-control-text);font-size:13px;font-weight:400;line-height:20px;min-height:32px;padding:5px 31px 5px 7px;margin:0}
+body.uf-theme .cbi-dynlist>.item::after {content:'×';top:0;right:0;bottom:0;width:30px;justify-content:center;padding:0;border:0;border-radius:4px;color:var(--uf-control-muted);font-size:18px;font-weight:400;background:transparent;cursor:pointer}
+body.uf-theme .cbi-dynlist>.item:hover::after {background:var(--uf-control-hover);color:var(--uf-control-danger)}
+body.uf-theme .cbi-dynlist>.item:focus {border-color:var(--uf-control-accent)!important;outline:0}
+body.uf-theme .cbi-dynlist>.add-item {gap:4px}
+body.uf-theme .cbi-dynlist>.add-item>:is(input,.cbi-dropdown) {min-width:0;flex:1;width:0}
+body.uf-theme .cbi-dynlist>.add-item>:is(button,.cbi-button) {flex:0 0 32px;width:32px;min-width:32px;padding:0;border:0;border-radius:4px;background:transparent;color:var(--uf-control-accent);font-size:18px;font-weight:400}
+body.uf-theme .cbi-dynlist>.add-item>:is(button,.cbi-button):hover {background:var(--uf-control-selection);border-color:transparent!important}
+body.uf-theme .cbi-dropdown:where(:not(.btn):not(.cbi-button)) {padding:0}
+body.uf-theme .cbi-dropdown>ul {padding:4px 7px}
+body.uf-theme .cbi-dropdown[open]>ul.dropdown {background:var(--uf-control-popup);border:1px solid var(--uf-control-popup-line);border-radius:4px;box-shadow:0 4px 16px #0002}
+body.uf-theme .cbi-dropdown[open]>ul.dropdown>li {color:var(--uf-control-text)}
+body.uf-theme .cbi-dropdown[open]>ul.dropdown>li:is(.focus,:hover) {background:var(--uf-control-hover);color:var(--uf-control-text)}
+
+/* Measured capsule tabs; native page-level tabs retain their underline role. */
+body.uf-theme :is(.uf-segmented,.uf-client-modes,ul.cbi-tabmenu) {display:inline-flex;flex-wrap:nowrap;align-items:stretch;width:max-content;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;background:var(--uf-control-track);border:0;border-radius:8px;padding:2px;gap:0;scrollbar-width:thin}
+body.uf-theme :is(.uf-segmented,.uf-client-modes)>button,
+body.uf-theme ul.cbi-tabmenu>li>a {display:block;flex:0 0 auto;width:auto;min-width:max-content;min-height:28px;margin:0;border:0;border-radius:6px;padding:4px 16px;font-size:13px;font-weight:400;line-height:20px;white-space:nowrap;overflow:visible;text-overflow:clip;background:transparent;color:var(--uf-control-muted);box-shadow:none;cursor:pointer}
+body.uf-theme :is(.uf-segmented,.uf-client-modes)>button:is(.active,[aria-pressed=true]) {background:var(--uf-control-selected);color:var(--uf-control-accent);box-shadow:none}
+body.uf-theme ul.cbi-tabmenu {min-height:32px;margin:0 0 20px}
+/* Bootstrap caps each li at 48% and 25px; neither fits capsule contents. */
+body.uf-theme ul.cbi-tabmenu>li,
+body.uf-theme ul.tabs>li {display:flex;align-items:center;flex:0 0 auto;max-width:none;height:auto;margin:0;padding:0;border:0;background:transparent;border-radius:0}
+body.uf-theme ul.cbi-tabmenu>li:hover {background:transparent}
+body.uf-theme :is(.uf-segmented,.uf-client-modes)>button:not(.active):not([aria-pressed=true]):hover,
+body.uf-theme ul.cbi-tabmenu>li.cbi-tab-disabled>a:hover {background:var(--uf-control-hover);color:var(--uf-control-text)}
+body.uf-theme ul.cbi-tabmenu>li.cbi-tab>a {background:var(--uf-control-selected);color:var(--uf-control-accent)}
+body.uf-theme :is(.uf-segmented,.uf-client-modes)>button:focus-visible,
+body.uf-theme ul.cbi-tabmenu>li>a:focus-visible {outline-offset:-2px}
+body.uf-theme ul.tabs {flex-wrap:nowrap;max-width:100%;overflow-x:auto;scrollbar-width:thin}
+body.uf-theme ul.tabs>li>a {min-height:40px;padding:9px 5px;line-height:20px;border-bottom-width:1px;font-weight:400;white-space:nowrap;overflow:visible;text-overflow:clip}
+body.uf-theme ul.tabs>li.active>a {color:var(--uf-control-text);font-weight:400}
+
+/* Match the reference text density without changing table behavior. */
+body.uf-theme :is(table,.table):not(.uf-devices-table) :is(th,.th) {font-size:13px;font-weight:600;line-height:20px;background:transparent;padding:6px 8px}
+body.uf-theme :is(table,.table):not(.uf-devices-table) :is(td,.td) {font-size:13px;line-height:20px;padding:6px 8px}
+body.uf-theme .label {background:var(--uf-control-bg);color:var(--uf-control-muted);border:0;border-radius:4px;padding:2px 6px;font-size:11px;line-height:16px;text-shadow:none}
+body.uf-theme .label.notice {color:var(--uf-control-accent);background:var(--uf-control-selection)}
+
+/* Alerts, tooltips, centered LuCI dialogs and the client side panel. */
+body.uf-theme .alert-message {background:var(--uf-control-bg);border:1px solid var(--uf-line);border-radius:4px;padding:12px 16px;color:var(--uf-control-text);font-size:13px;line-height:20px;box-shadow:none;margin:0 0 16px}
+body.uf-theme .alert-message h4 {font-size:13px;font-weight:600;line-height:20px;margin:0 0 4px}
+body.uf-theme .alert-message p:last-child {margin:0}
+body.uf-theme .alert-message:is(.error,.danger) {border-left:3px solid var(--uf-control-danger)}
+body.uf-theme .alert-message.warning {border-left:3px solid #e7a600}
+body.uf-theme .alert-message.success {border-left:3px solid var(--uf-green)}
+body.uf-theme .alert-message:is(.info,.notice) {border-left:3px solid var(--uf-control-accent)}
+body.uf-theme .cbi-tooltip {background:#2b2b2b;color:#fafafa;border:0;border-radius:4px;font-size:11px;line-height:16px;font-weight:400;padding:8px 16px;white-space:normal;max-width:320px;box-shadow:var(--uf-control-tooltip-shadow)}
+body.uf-theme .cbi-tooltip::before {content:'';position:absolute;top:-3px;left:16px;width:6px;height:6px;transform:rotate(45deg);background:#2b2b2b;border:0}
+body.uf-theme .cbi-tooltip-container:focus-visible .cbi-tooltip:not(:empty) {left:auto;opacity:1}
+body.uf-theme #modal_overlay {background:var(--uf-control-overlay);backdrop-filter:none}
+body.uf-theme #modal_overlay>.modal {background:var(--uf-surface);color:var(--uf-control-text);border:0;border-radius:8px;padding:20px;box-shadow:var(--uf-control-modal-shadow);max-height:85vh;max-width:calc(100vw - 24px);overflow:auto}
+body.uf-theme .modal .cbi-section {padding:12px 0;border:0}
+body.uf-theme .modal h4 {font-size:13px;font-weight:600;line-height:20px}
+body.uf-theme .modal .cbi-page-actions {padding-bottom:0;margin-bottom:0;border:0}
+body.uf-theme .modal .cbi-page-actions>:is(.btn,.cbi-button):not(.cbi-button-apply):not(.cbi-button-save):not(.cbi-button-positive):not(.cbi-button-add):not(.cbi-button-negative):not(.cbi-button-remove) {color:var(--uf-control-muted)}
+body.uf-theme .uf-client-drawer {background:var(--uf-surface);box-shadow:-4px 0 48px #0003,0 0 1px #0002}
+html[data-darkmode=true] body.uf-theme .uf-client-drawer {box-shadow:-4px 0 48px #000,0 0 1px #f9fafa14}
+body.uf-theme .cbi-progressbar {height:6px;min-width:0;border:0;border-radius:3px;background:var(--uf-control-track);box-shadow:none}
+body.uf-theme .cbi-progressbar>div {height:100%;border-radius:3px;background:var(--uf-control-accent)}
+body.uf-theme input[type=range] {accent-color:var(--uf-control-accent);height:16px;vertical-align:middle;cursor:pointer}
+body.uf-theme input[type=file] {background:transparent;border:0;color:var(--uf-control-muted);font-size:13px;max-width:100%;line-height:24px}
+body.uf-theme input[type=file]::file-selector-button {font:inherit;line-height:24px;border:0;border-radius:0;background:transparent;color:var(--uf-control-accent);padding:0;margin-right:8px;cursor:pointer}
+body.uf-theme input[type=file]::file-selector-button:hover {color:var(--uf-control-accent-hover)}
+
+@media(max-width:900px) {
+	body.uf-theme .cbi-value>.cbi-value-title {flex-basis:180px;width:180px}
+}
+@media(max-width:680px) {
+	body.uf-theme .cbi-value {display:block;padding:6px 0}
+	body.uf-theme .cbi-value>.cbi-value-title {display:block;width:auto;text-align:left;padding:0;margin:0 0 4px}
+	body.uf-theme .cbi-value-field {margin-left:0;width:100%}
+	body.uf-theme .cbi-value-field>input:not([type=checkbox]):not([type=radio]):not([type=hidden]),
+	body.uf-theme .cbi-value-field>select {width:100%}
+	body.uf-theme .cbi-page-actions {flex-wrap:wrap}
+	body.uf-theme .cbi-page-actions>:is(.cbi-button,.btn) {padding-left:10px;padding-right:10px}
+	body.uf-theme #modal_overlay>.modal {min-width:0;width:calc(100vw - 24px);padding:16px}
+	body.uf-theme :is(.uf-segmented,.uf-client-modes)>button {padding:4px 8px}
+	body.uf-theme ul.cbi-tabmenu>li>a {padding:4px 8px}
+}
+@media(prefers-reduced-motion:reduce) {
+	body.uf-theme :is(input,select,textarea,button,.btn,.cbi-button) {transition:none}
+}

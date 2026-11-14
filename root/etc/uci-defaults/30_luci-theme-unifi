@@ -1,0 +1,10 @@
+#!/bin/sh
+# Replace previous registrations of this theme without changing the selection.
+uci -q show luci.themes |
+while IFS='=' read -r theme_key theme_value; do
+	[ "$theme_value" = "'/luci-static/unifi'" ] || continue
+	[ "$theme_key" = 'luci.themes.Unifi' ] || uci -q delete "$theme_key"
+done
+uci -q set luci.themes.Unifi='/luci-static/unifi'
+uci -q commit luci
+exit 0

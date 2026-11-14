@@ -1,0 +1,25 @@
+<!doctype html><html lang="zh-cn" data-darkmode="true"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Unifi · 登录预览</title><link rel="stylesheet" href="/luci-static/unifi/cascade.css"><link rel="stylesheet" href="/luci-static/unifi/controls.css"><link rel="stylesheet" href="/luci-static/unifi/layout.css"><link rel="stylesheet" href="/luci-static/unifi/icons.css"><link rel="stylesheet" href="/luci-static/unifi/mobile.css"><link rel="stylesheet" href="/luci-static/unifi/login.css"><link rel="icon" href="/luci-static/unifi/logo.svg"></head><body class="uf-theme uf-login">
+
+<main class="uf-login-screen">
+	<section class="uf-login-panel" aria-label="登录">
+		<div class="uf-login-logo"><img src="/luci-static/unifi/login-wordmark.svg" width="152" height="152" alt="Unifi"></div>
+		<div class="uf-login-version">ImmortalWrt 23.05.4</div>
+		<div class="uf-login-content">
+			<form method="post" class="uf-login-form">
+				<div class="uf-login-field">
+					<label for="luci_username">用户名</label>
+					<input name="luci_username" id="luci_username" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" required value="root">
+				</div>
+				<div class="uf-login-field">
+					<label for="luci_password">密码</label>
+					<input name="luci_password" id="luci_password" type="password" autocomplete="current-password" autofocus>
+				</div>
+				<button class="uf-login-submit" type="submit" data-busy-label="正在登录…">登录</button>
+				<noscript><p class="uf-login-noscript">请启用浏览器的 JavaScript，以使用完整的 LuCI 功能。</p></noscript>
+			</form>
+		</div>
+	</section>
+</main>
+<script src="/luci-static/unifi/login.js?v=0.8.2" defer></script>
+
+<script src="/preview/login.js" defer></script></body></html>

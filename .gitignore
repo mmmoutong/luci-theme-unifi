@@ -1,0 +1,55 @@
+# Downloaded dependencies, local tools and generated output
+/vendor/
+/artifacts/
+node_modules/
+/build/
+/dist/
+/tmp/
+/coverage/
+/playwright-report/
+/test-results/
+*.ipk
+*.apk
+*.tar.gz
+*.zip
+*.log
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Local credentials, environment overrides and device backups
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+.netrc
+.npmrc
+/backups/
+
+# OS, editor and assistant workspace state
+.DS_Store
+._*
+.Spotlight-V100/
+.Trashes/
+.idea/
+.vscode/
+.commandcode/
+.codex/
+*.swp
+*.swo
+*~
+
+# Raw reference captures and internal notes can contain local information.
+# Keep only provenance and measured values required by the public tests.
+/research/*
+!/research/brand-data-sources.json
+!/research/unifi-dark-palette.json
+!/research/control-reference/
+/research/control-reference/*
+!/research/control-reference/system-dark.json
+!/research/control-reference/dialog-dark.json
