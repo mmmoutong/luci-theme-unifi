@@ -66,7 +66,7 @@ python3 tools/preview_server.py
 
 打开 [127.0.0.1:8765](http://127.0.0.1:8765/)。预览使用虚构数据，不连接路由器。
 
-本地打包、SDK 构建、测试及标签发布见[开发指南](development.zh-CN.md)，版本变更见[更新日志](../CHANGELOG.md)。反馈问题时，请附固件、LuCI 和主题版本、浏览器、受影响页面及复现步骤。
+本地打包、SDK 构建、测试及标签发布见[开发指南](development.zh-CN.md)，版本变更见[更新日志](../CHANGELOG.md)。[反馈问题](https://github.com/mouse233/luci-theme-unifi/issues/new/choose)时，请附固件、LuCI 和主题版本、浏览器、受影响页面及复现步骤。
 
 ## 许可与致谢
 

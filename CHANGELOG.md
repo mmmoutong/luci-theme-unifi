@@ -4,6 +4,17 @@
 
 ### Added
 
+- Bilingual GitHub issue forms for bug reports and feature requests.
+
+### Fixed
+
+- Validate release notes before starting the full test suite.
+- Upload validated build assets to an existing GitHub Release, preserving any release notes already supplied by the maintainer.
+
+## [1.0.0] - 2026-11-14
+
+### Added
+
 - GitHub Actions checks for JavaScript, packaging, ucode storage, templates, and browser behavior.
 - Automatic IPK artifacts after successful CI runs and GitHub Releases when a version tag passes all checks.
 - Tag-derived package versions, build provenance, SHA-256 checksums, and release notes extracted from this file.

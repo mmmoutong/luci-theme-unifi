@@ -12,7 +12,26 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7
+        with:
+          python-version: '3.11'
+      - name: Validate the tag and changelog before running tests
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 tools/version.py --tag "$RELEASE_TAG"
+          python3 tools/release_notes.py "$RELEASE_TAG"
+
   test:
+    needs: validate
     uses: ./.github/workflows/ci.yml
 
   release:
@@ -70,7 +89,14 @@ jobs:
         run: |
           flags=()
           if [[ "$RELEASE_TAG" == *-* ]]; then flags+=(--prerelease); fi
-          gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
-            --notes-file artifacts/release-notes.md "${flags[@]}" \
-            artifacts/packages/*.ipk artifacts/packages/SHA256SUMS \
-            artifacts/packages/manifest.json artifacts/packages/luci-theme-unifi-rootfs.tar.gz
+          assets=(artifacts/packages/*.ipk artifacts/packages/SHA256SUMS
+            artifacts/packages/manifest.json artifacts/packages/luci-theme-unifi-rootfs.tar.gz)
+          if gh release view "$RELEASE_TAG" --json tagName > /dev/null 2>&1; then
+            gh release upload "$RELEASE_TAG" "${assets[@]}" --clobber
+            if [[ -z "$(gh release view "$RELEASE_TAG" --json body --jq '.body')" ]]; then
+              gh release edit "$RELEASE_TAG" --notes-file artifacts/release-notes.md
+            fi
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" \
+              --notes-file artifacts/release-notes.md "${flags[@]}" "${assets[@]}"
+          fi

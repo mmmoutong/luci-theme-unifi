@@ -163,7 +163,7 @@ git tag -a v0.9.0 -m "Release v0.9.0"
 git push origin v0.9.0
 ```
 
-The Release workflow validates the tag format, its commit, and a nonempty matching changelog section before publishing. Attachments include the IPK, root filesystem payload, manifest, and SHA-256 checksums.
+The Release workflow validates the tag format, its commit, and a nonempty matching changelog section before running tests. The changelog section must be present in the tagged commit; changing only the default branch cannot repair the source of an existing tag. Attachments include the IPK, root filesystem payload, manifest, and SHA-256 checksums. If the GitHub Release already exists, the workflow uploads the verified assets and preserves any existing release notes.
 
 ## Restore or uninstall
 

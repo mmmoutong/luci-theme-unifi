@@ -66,7 +66,7 @@ python3 tools/preview_server.py
 
 Open [127.0.0.1:8765](http://127.0.0.1:8765/). The preview uses synthetic data and does not connect to your router.
 
-See the [development guide](docs/development.md) for local packaging, SDK builds, tests, and tag releases, and the [changelog](CHANGELOG.md) for version history. When reporting an issue, include your firmware, LuCI and theme versions, browser, affected page, and reproduction steps.
+See the [development guide](docs/development.md) for local packaging, SDK builds, tests, and tag releases, and the [changelog](CHANGELOG.md) for version history. When [reporting an issue](https://github.com/mouse233/luci-theme-unifi/issues/new/choose), include your firmware, LuCI and theme versions, browser, affected page, and reproduction steps.
 
 ## License and credits
 
