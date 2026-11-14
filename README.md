@@ -34,7 +34,7 @@ Dependencies: `luci-base`, `luci-theme-bootstrap`, `luci-mod-status`, `ucode-mod
 ## Installation
 
 1. Download `luci-theme-unifi_…_all.ipk` from [Releases](https://github.com/mouse233/luci-theme-unifi/releases). For a development build, open a successful [Actions → CI](https://github.com/mouse233/luci-theme-unifi/actions/workflows/ci.yml) run, download its `luci-theme-unifi-…` artifact, and extract the IPK.
-2. Upload the IPK to the router's `/tmp/` directory. To verify it, also download and upload `SHA256SUMS` and follow the [checksum instructions](docs/development.md#verify-a-package).
+2. Upload the IPK to the router's `/tmp/` directory.
 3. Run over SSH on the router:
 
 ```sh
@@ -66,7 +66,7 @@ python3 tools/preview_server.py
 
 Open [127.0.0.1:8765](http://127.0.0.1:8765/). The preview uses synthetic data and does not connect to your router.
 
-See the [development guide](docs/development.md) for local packaging, SDK builds, tests, and tag releases, and the [changelog](CHANGELOG.md) for version history. When [reporting an issue](https://github.com/mouse233/luci-theme-unifi/issues/new/choose), include your firmware, LuCI and theme versions, browser, affected page, and reproduction steps.
+See the [development guide](docs/development.md) for local packaging, SDK builds, tests, and tag releases, and the [changelog](CHANGELOG.md) for version history. When [reporting an issue](https://github.com/mouse233/luci-theme-unifi/issues/new/choose), provide your OpenWrt firmware version, describe the problem, and include screenshots if applicable.
 
 ## License and credits
 

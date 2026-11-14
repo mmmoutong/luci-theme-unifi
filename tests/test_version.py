@@ -17,6 +17,8 @@ class VersionTests(unittest.TestCase):
         self.git('init', '-q')
         self.git('config', 'user.name', 'Test Author')
         self.git('config', 'user.email', 'test@example.invalid')
+        self.git('config', 'commit.gpgsign', 'false')
+        self.git('config', 'tag.gpgsign', 'false')
         (self.root / '.gitignore').write_text('/artifacts/\n')
         (self.root / 'source').write_text('theme source\n')
         self.git('add', '.')

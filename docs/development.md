@@ -40,9 +40,6 @@ python3 tools/build_package.py
 Output is written to the ignored `artifacts/packages/` directory:
 
 - `luci-theme-unifi_<version>-1_all.ipk` — installable package.
-- `luci-theme-unifi-rootfs.tar.gz` — package payload.
-- `manifest.json` — payload paths, modes, and SHA-256 hashes.
-- `SHA256SUMS` — checksums for generated top-level artifacts.
 
 The local builder needs only the Python standard library. It packages static assets, LuCI JavaScript, and ucode source, with no host binaries. It does not replace validation against a matching OpenWrt SDK.
 
@@ -122,20 +119,13 @@ This archives the committed Git tree and writes a separate source checksum file.
 
 ## Contributing and bug reports
 
-For a bug report, include the firmware and LuCI versions, theme version, browser, viewport size, affected page, and steps to reproduce. Redact device and session information from screenshots and logs. For a plugin layout issue, include the plugin name and version.
+For a bug report, provide your OpenWrt firmware version, describe the behavior, and include screenshots if applicable.
 
 Keep changes focused and run the relevant checks. Changes to shared controls or layout should be checked in light and dark modes at desktop and mobile widths. Compatibility reports are welcome; please distinguish local preview results from tests on an actual router.
 
-## Verify a package
+## Download build artifacts
 
-Put the downloaded IPK and its matching `SHA256SUMS` in the router's `/tmp/` directory. Verify the IPK before following the README installation commands:
-
-```sh
-cd /tmp
-sed -n '/\.ipk$/p' SHA256SUMS | sha256sum -c -
-```
-
-The IPK must report `OK`. Extract Actions ZIP artifacts on your computer first. CI artifacts are retained for 30 days; tagged release attachments are available under Releases.
+Releases provide only the installable IPK. Extract the Actions artifact ZIP to get the IPK; CI artifacts are retained for 30 days.
 
 Development package versions sort below tagged releases. To replace an installed release with a development build, switch to another theme and remove the existing Unifi package before installing the development IPK.
 
@@ -148,7 +138,7 @@ Git tags are the source of release versions; source files do not repeat the curr
 - Untagged commits → `0~git<commit-time>.<commit>-1`, with `+dirty` added for local changes.
 - Source copies without Git metadata → `0~dev-1`; use `python3 tools/build_package.py --version 0.9.0` to set a version explicitly. SDK builds accept `PKG_VERSION=0.9.0`.
 
-`PKG_RELEASE` is the package revision only. Builds write the version into IPK metadata, filenames, `manifest.json`, and template cache identifiers. Templates use LuCI's native `PKG_VERSION` comment marker, supported by both the local builder and SDK.
+`PKG_RELEASE` is the package revision only. Builds write the version into IPK metadata, filenames, and template cache identifiers. Templates use LuCI's native `PKG_VERSION` comment marker, supported by both the local builder and SDK.
 
 CI runs unit, packaging, ucode, and all browser checks on branch pushes and pull requests, then uploads the IPK artifact. Version tag pushes reuse those checks and publish the verified artifact to GitHub Releases.
 
@@ -163,7 +153,7 @@ git tag -a v0.9.0 -m "Release v0.9.0"
 git push origin v0.9.0
 ```
 
-The Release workflow validates the tag format, its commit, and a nonempty matching changelog section before running tests. The changelog section must be present in the tagged commit; changing only the default branch cannot repair the source of an existing tag. Attachments include the IPK, root filesystem payload, manifest, and SHA-256 checksums. If the GitHub Release already exists, the workflow uploads the verified assets and preserves any existing release notes.
+The Release workflow validates the tag format, its commit, and a nonempty matching changelog section before running tests. The changelog section must be present in the tagged commit; changing only the default branch cannot repair the source of an existing tag. Release attachments contain only the installable IPK. If the GitHub Release already exists, the workflow uploads the verified assets and preserves any existing release notes.
 
 ## Restore or uninstall
 

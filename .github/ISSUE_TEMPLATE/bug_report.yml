@@ -1,64 +1,22 @@
-name: 问题反馈 / Bug report
-description: 报告主题显示、安装或功能问题 / Report a display, installation, or functionality issue.
-title: "[Bug] "
+name: Bug report
+description: Report a problem with luci-theme-unifi.
 body:
-  - type: markdown
-    attributes:
-      value: |
-        支持中文或英文。提交前请搜索已有 Issue；截图和日志请遮蔽密码、会话信息及真实设备标识。
-        Chinese and English are welcome. Search existing issues first and redact credentials, session data, and private device identifiers.
   - type: input
-    id: theme_version
+    id: firmware
     attributes:
-      label: 主题版本 / Theme version
-      description: 发布版本、IPK 文件名或 CI 构建的提交号 / Release version, IPK filename, or CI build commit.
-      placeholder: v1.0.0 / luci-theme-unifi_…_all.ipk / commit SHA
-    validations:
-      required: true
-  - type: dropdown
-    id: environment_type
-    attributes:
-      label: 运行环境 / Where it happens
-      options:
-        - 路由器 / Router
-        - 本地预览 / Local preview
-    validations:
-      required: true
-  - type: textarea
-    id: environment
-    attributes:
-      label: 环境信息 / Environment
-      description: 本地预览可省略固件和 LuCI 版本 / Omit firmware and LuCI versions for the local preview.
-      placeholder: |
-        固件 / Firmware:
-        LuCI 版本 / LuCI version:
-        设备型号或架构 / Device model or architecture:
-        浏览器版本与系统 / Browser version and OS:
-        外观模式与窗口大小 / Appearance mode and viewport:
+      label: OpenWrt firmware version
+      placeholder: OpenWrt 23.05.5 / ImmortalWrt 23.05.4
     validations:
       required: true
   - type: textarea
     id: behavior
     attributes:
-      label: 实际表现与预期 / Actual and expected behavior
-      description: 说明受影响的页面；第三方插件问题请附插件名称和版本 / Include the affected page and any third-party plugin name and version.
-      placeholder: |
-        实际表现 / Actual:
-        预期表现 / Expected:
-    validations:
-      required: true
-  - type: textarea
-    id: reproduction
-    attributes:
-      label: 复现步骤 / Steps to reproduce
-      placeholder: |
-        1. 打开页面 / Open the page…
-        2. 执行操作 / Perform the action…
-        3. 观察结果 / Observe the result…
+      label: Behavior
+      placeholder: Describe the problem.
     validations:
       required: true
   - type: textarea
     id: screenshots
     attributes:
-      label: 截图与补充信息 / Screenshots and additional context
-      description: 可拖入截图。安装问题可附完整报错，页面问题可附浏览器控制台错误 / Drag screenshots here; include installation errors or browser console errors when relevant.
+      label: Screenshots
+      description: Paste or drag screenshots here.

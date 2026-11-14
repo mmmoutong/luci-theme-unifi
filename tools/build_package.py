@@ -2,9 +2,7 @@
 """Build a reproducible architecture-independent IPK from theme sources."""
 import argparse
 import gzip
-import hashlib
 import io
-import json
 from pathlib import Path
 import re
 import tarfile
@@ -76,17 +74,7 @@ License: {license_name}
                        ('data.tar.gz', payload, 0o644)])
     output.mkdir(parents=True, exist_ok=True)
     name = f'luci-theme-unifi_{version}_all.ipk'
-    manifest = {'package': name, **info, 'version': version,
-                'files': [{'path': path, 'sha256': hashlib.sha256(data).hexdigest(), 'mode': oct(mode)}
-                          for path, data, mode in entries]}
-    products = {name: package, 'luci-theme-unifi-rootfs.tar.gz': payload,
-                'manifest.json': (json.dumps(manifest, indent=2) + '\n').encode()}
-    for filename, data in products.items():
-        (output / filename).write_bytes(data)
-    # Hash only this build, never unrelated files or earlier IPKs in artifacts/.
-    (output / 'SHA256SUMS').write_text(''.join(
-        hashlib.sha256(products[filename]).hexdigest() + '  ' + filename + '\n'
-        for filename in sorted(products)))
+    (output / name).write_bytes(package)
     return output / name
 
 

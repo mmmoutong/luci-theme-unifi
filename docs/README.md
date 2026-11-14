@@ -34,7 +34,7 @@
 ## 安装
 
 1. 从 [Releases](https://github.com/mouse233/luci-theme-unifi/releases) 下载发布版本的 `luci-theme-unifi_…_all.ipk`。开发版可在 [Actions → CI](https://github.com/mouse233/luci-theme-unifi/actions/workflows/ci.yml) 的成功运行中下载 `luci-theme-unifi-…` artifact，解压后取出 IPK。
-2. 将 IPK 上传至路由器 `/tmp/`。如需校验，同时下载并上传 `SHA256SUMS`，按[校验说明](development.zh-CN.md#校验安装包)操作。
+2. 将 IPK 上传至路由器 `/tmp/`。
 3. 通过 SSH 在路由器上执行：
 
 ```sh
@@ -66,7 +66,7 @@ python3 tools/preview_server.py
 
 打开 [127.0.0.1:8765](http://127.0.0.1:8765/)。预览使用虚构数据，不连接路由器。
 
-本地打包、SDK 构建、测试及标签发布见[开发指南](development.zh-CN.md)，版本变更见[更新日志](../CHANGELOG.md)。[反馈问题](https://github.com/mouse233/luci-theme-unifi/issues/new/choose)时，请附固件、LuCI 和主题版本、浏览器、受影响页面及复现步骤。
+本地打包、SDK 构建、测试及标签发布见[开发指南](development.zh-CN.md)，版本变更见[更新日志](../CHANGELOG.md)。[反馈问题](https://github.com/mouse233/luci-theme-unifi/issues/new/choose)时，请提供 OpenWrt 固件版本、描述问题表现，并按需附上截图。
 
 ## 许可与致谢
 

@@ -4,7 +4,11 @@
 
 ### Added
 
-- Bilingual GitHub issue forms for bug reports and feature requests.
+- A concise English bug report form with firmware version, behavior, and screenshots.
+
+### Changed
+
+- Build and publish only the installable IPK; remove separate payload archives, manifests, and checksum files from the package workflow.
 
 ### Fixed
 

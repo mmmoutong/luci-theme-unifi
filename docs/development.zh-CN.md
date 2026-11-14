@@ -40,9 +40,6 @@ python3 tools/build_package.py
 生成文件位于被 Git 忽略的 `artifacts/packages/`：
 
 - `luci-theme-unifi_<version>-1_all.ipk`：可安装的软件包。
-- `luci-theme-unifi-rootfs.tar.gz`：安装载荷。
-- `manifest.json`：载荷路径、权限和 SHA-256 摘要。
-- `SHA256SUMS`：生成的顶层产物校验和。
 
 本地打包器仅依赖 Python 标准库，收录静态资源、LuCI JavaScript 和 ucode 源码，不包含本机二进制。打包成功不代表已经通过目标固件 SDK 验证。
 
@@ -122,20 +119,13 @@ python3 tools/bundle_release.py
 
 ## 贡献与问题反馈
 
-反馈问题时，请提供固件与 LuCI 版本、主题版本、浏览器、视口大小、受影响页面及复现步骤。截图和日志请先移除设备与会话信息。第三方插件布局问题还需提供插件名称与版本。
+反馈问题时，请提供 OpenWrt 固件版本、描述问题表现，并按需附上截图。
 
 请让修改范围保持集中，并运行相关检查。共享控件或布局变更应同时检查浅色、深色、桌面和手机宽度。欢迎提供兼容性反馈，请区分本地预览结果与路由器实机结果。
 
-## 校验安装包
+## 下载构建包
 
-将下载的 IPK 与同次构建的 `SHA256SUMS` 放在路由器 `/tmp/`，先校验 IPK，成功后再按 README 安装：
-
-```sh
-cd /tmp
-sed -n '/\.ipk$/p' SHA256SUMS | sha256sum -c -
-```
-
-输出应显示对应 IPK 为 `OK`。Actions 下载的是 ZIP，需要先在电脑上解压。CI artifact 保留 30 天；发布版本的附件位于 Releases。
+Release 只提供可安装的 IPK。Actions 的 artifact 是 ZIP，解压后取出 IPK 即可；CI artifact 保留 30 天。
 
 开发包的版本号低于正式版。如果需要用开发版替换已安装的正式版，请先切换到其他主题并卸载现有 Unifi 软件包，再安装开发版 IPK。
 
@@ -148,7 +138,7 @@ sed -n '/\.ipk$/p' SHA256SUMS | sha256sum -c -
 - 未打标签的提交 → `0~git<提交时间>.<提交号>-1`；工作区有改动时增加 `+dirty` 标记。
 - 无 Git 信息的源码副本 → `0~dev-1`；可用 `python3 tools/build_package.py --version 0.9.0` 显式指定版本。SDK 构建可传入 `PKG_VERSION=0.9.0`。
 
-`PKG_RELEASE` 仅表示软件包修订号。构建时，版本会写入 IPK 元数据、文件名、`manifest.json` 和 LuCI 模板的资源缓存标识；模板使用 LuCI 原生的 `PKG_VERSION` 注释占位符，本地打包器和 SDK 均支持替换。
+`PKG_RELEASE` 仅表示软件包修订号。构建时，版本会写入 IPK 元数据、文件名和 LuCI 模板的资源缓存标识；模板使用 LuCI 原生的 `PKG_VERSION` 注释占位符，本地打包器和 SDK 均支持替换。
 
 CI 在分支推送和 PR 时运行单元、打包、ucode 及全部浏览器检查，成功后上传 IPK artifact。推送版本标签会复用同一套检查，再将经过校验的 artifact 发布到 GitHub Releases。
 
@@ -163,7 +153,7 @@ git tag -a v0.9.0 -m "Release v0.9.0"
 git push origin v0.9.0
 ```
 
-Release workflow 会在测试前验证标签格式、标签是否指向当前提交，以及更新日志是否包含同版本的非空章节。该章节必须位于标签对应的提交中，仅修改默认分支不会改变已有标签的源码。发布附件包括 IPK、安装载荷、清单和 SHA-256 校验文件；如果 GitHub Release 已经存在，workflow 会上传已验证的附件，并保留已有的发布说明。
+Release workflow 会在测试前验证标签格式、标签是否指向当前提交，以及更新日志是否包含同版本的非空章节。该章节必须位于标签对应的提交中，仅修改默认分支不会改变已有标签的源码。发布附件仅包含可安装的 IPK；如果 GitHub Release 已经存在，workflow 会上传已验证的附件，并保留已有的发布说明。
 
 ## 恢复与卸载
 

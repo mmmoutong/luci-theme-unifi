@@ -1,6 +1,4 @@
-import hashlib
 import io
-import json
 from pathlib import Path
 import sys
 import tarfile
@@ -19,7 +17,7 @@ def contents(data):
 
 
 class PackageTests(unittest.TestCase):
-    def test_ipk_payload_version_permissions_manifest_and_checksums(self):
+    def test_ipk_payload_version_permissions_and_reproducibility(self):
         info = {'version': '1.2.3~rc.1', 'tag': 'v1.2.3-rc.1', 'commit': 'a' * 40, 'dirty': False}
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
@@ -53,21 +51,9 @@ class PackageTests(unittest.TestCase):
             self.assertIn(b'appearance.js?v=1.2.3~rc.1', header)
             footer = payload['usr/share/ucode/luci/template/themes/unifi/footer.ut'][0]
             self.assertIn(b'-unifi-1.2.3~rc.1', footer)
-            manifest = json.loads((output / 'manifest.json').read_text())
-            self.assertEqual(manifest['package'], package.name)
-            self.assertEqual(manifest['version'], '1.2.3~rc.1-1')
-            self.assertEqual(manifest['commit'], info['commit'])
-            self.assertEqual({entry['path'] for entry in manifest['files']}, expected)
-            for entry in manifest['files']:
-                data, mode = payload[entry['path']]
-                self.assertEqual(entry['sha256'], hashlib.sha256(data).hexdigest())
-                self.assertEqual(entry['mode'], oct(mode))
-            checks = (output / 'SHA256SUMS').read_text().splitlines()
-            self.assertEqual(len(checks), 3)
-            for line in checks:
-                digest, filename = line.split('  ')
-                self.assertEqual(digest, hashlib.sha256((output / filename).read_bytes()).hexdigest())
-                self.assertNotEqual(filename, 'unrelated.txt')
+            self.assertEqual(package.name, 'luci-theme-unifi_1.2.3~rc.1-1_all.ipk')
+            self.assertEqual({file.name for file in output.iterdir()}, {package.name, 'unrelated.txt'})
+            self.assertEqual((output / 'unrelated.txt').read_text(), 'not a build product')
             build(ROOT, output, info)
             self.assertEqual(first, package.read_bytes(), 'identical inputs produce identical IPKs')
 

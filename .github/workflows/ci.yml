@@ -102,12 +102,9 @@ jobs:
           python-version: '3.11'
       - name: Build IPK
         run: python3 tools/build_package.py
-      - name: Verify package checksums
-        working-directory: artifacts/packages
-        run: sha256sum -c SHA256SUMS
       - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: luci-theme-unifi-${{ github.sha }}
-          path: artifacts/packages/
+          path: artifacts/packages/*.ipk
           if-no-files-found: error
           retention-days: 30
