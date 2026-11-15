@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-11-15
+
 ### Changed
 
 - Build and publish an ImmortalWrt 25.12-compatible APK alongside the IPK.
