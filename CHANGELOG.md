@@ -2,6 +2,16 @@
 
 ## [Unreleased]
 
+### Changed
+
+- Build and publish an ImmortalWrt 25.12-compatible APK alongside the IPK.
+- Validate the theme on ImmortalWrt 24.10.6 and 25.12.2 in x86-64 containers.
+
+### Fixed
+
+- Allow upgrades while Unifi is active and preserve its theme registration during replacement. Removing the active theme now selects Bootstrap automatically instead of refusing removal; upgrades from 1.0.1 or earlier still require a one-time manual theme switch because their installed scripts contain the old guard.
+- Install and remove cleanly on ImmortalWrt 25.12's `apk`: tolerate the uci-defaults script already being consumed by `default_postinst`, select Bootstrap when `pre-deinstall` receives a version argument instead of `remove`, and stop or disable services idempotently.
+
 ## [1.1.0] - 2026-11-14
 
 ### Added
