@@ -55,7 +55,8 @@ function inventory() {
 	for (let m in devices) if (!map[m]) { states.reset(m); delete trusted[m]; }
 	devices = map; bindings = arp;
 	// REACHABLE is a kernel confirmation, unlike a merely retained STALE entry.
-	let f = popen('/usr/bin/ip -4 neigh show 2>/dev/null', 'r');
+	// OpenWrt installs ip-tiny/ip-full and the BusyBox applet as /sbin/ip.
+	let f = popen('for ip in /sbin/ip /usr/sbin/ip /usr/bin/ip; do [ -x "$ip" ] && exec "$ip" -4 neigh show; done 2>/dev/null', 'r');
 	let neighbours = f ? f.read('all') : '';
 	if (f) f.close();
 	for (let line in split(neighbours ?? '', '\n')) {
