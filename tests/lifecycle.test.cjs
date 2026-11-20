@@ -145,7 +145,7 @@ test('theme startup on native pages loads navigation only, even when menu loadin
       {extend: x => x}, {require: name => {requested.push(name);return fail ? Promise.reject(new Error('menu failed')) : Promise.resolve({});}},
       {body: {classList: {add: name => classes.add(name)}}}, {warn() {}});
     theme.__init__(); await theme.ready;
-    assert.deepEqual(requested, ['menu-unifi']);
+    assert.deepEqual(requested, fail ? ['menu-unifi', 'unifi.menu-fallback'] : ['menu-unifi']);
     assert.equal(classes.has('uf-menu-failed'), fail);
   }
 });

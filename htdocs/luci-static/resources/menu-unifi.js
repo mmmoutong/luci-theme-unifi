@@ -47,8 +47,9 @@ return baseclass.extend({
 			this.render(tree);
 			if (refresh) session.setLocalData('unifi-menu-version', revision);
 		}, this)).catch(function() {
-			// Keep the original server-rendered content visible if menu loading fails.
+			// Page content stays visible; replace the empty menu with fixed links.
 			document.body.classList.add('uf-menu-failed');
+			return L.require('unifi.menu-fallback').then(function(fallback) { fallback.render(); }).catch(function() {});
 		});
 	},
 	render: function(tree) {
