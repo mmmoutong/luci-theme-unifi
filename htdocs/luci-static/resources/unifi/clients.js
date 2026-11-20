@@ -52,7 +52,9 @@ return baseclass.extend({
 		var root=this.layout();this.accept(data);
 		this.poller=L.bind(function(){if(!document.hidden&&!this.busy)return this.refresh();},this);
 		poll.add(this.poller,Number(settings.get('client_refresh')));
-		window.addEventListener('pagehide',L.bind(function(){this.disposed=true;poll.remove(this.poller);},this),{once:true});
+		window.addEventListener('pagehide',L.bind(function(){this.disposed=true;poll.remove(this.poller);},this));
+		// A page restored from the back/forward cache must resume polling and manual refresh.
+		window.addEventListener('pageshow',L.bind(function(ev){if(!ev.persisted||!this.disposed)return;this.disposed=false;poll.add(this.poller,Number(settings.get('client_refresh')));this.refresh();},this));
 		return root;
 	},
 	activeColumns:function(){
