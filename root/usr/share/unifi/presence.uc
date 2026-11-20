@@ -52,7 +52,7 @@ function inventory() {
 		let old = devices[m];
 		if (old && (old.ip != d.ip || old.device != d.device || d.conflict != old.conflict)) { states.reset(m); delete trusted[m]; }
 	}
-	for (let m in devices) if (!map[m]) { states.reset(m); delete trusted[m]; }
+	for (let m in devices) if (!map[m]) { states.remove(m); delete trusted[m]; }
 	devices = map; bindings = arp;
 	// REACHABLE is a kernel confirmation, unlike a merely retained STALE entry.
 	// OpenWrt installs ip-tiny/ip-full and the BusyBox applet as /sbin/ip.
@@ -92,6 +92,7 @@ function probe(id, now) {
 		if (code == 0 && reply && reply[1] == d.ip && mac(reply[2]) == id) { trusted[id] = monotime() + 120; states.evidence(id, monotime(), time()); }
 		else if (reply && mac(reply[2]) != id) { live.conflict = true; delete trusted[id]; states.reset(id); }
 		else if (code == 1 && match(text, /Sent 1 probes/) && match(text, /Received 0 response/)) states.failure(id, monotime(), generation, true);
+		else states.postpone(id, monotime());
 	});
 }
 let object = bus.publish('unifi.presence', { list: { args: { ubus_rpc_session: '' }, call: function(req) {
