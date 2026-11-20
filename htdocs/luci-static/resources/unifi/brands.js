@@ -115,7 +115,7 @@ function avatar(identity, large, label) {
 	var node = E('span', { 'class': 'uf-client-avatar' + (brand ? ' uf-brand-avatar' : '') + (large ? ' large' : ''),
 		'title': label, 'aria-hidden': 'true', 'data-brand': identity.key || '' });
 	if (brand && brand.color) node.style.color = brand.color;
-	if (brand && !paths) node.appendChild(E('b', {}, brand.letter || (brand.name || identity.name || '?').charAt(0)));
+	if (brand && !paths) node.appendChild(E('b', {}, [brand.letter || (brand.name || identity.name || '?').charAt(0)]));
 	else {
 		svg.setAttribute('viewBox', '0 0 24 24');
 		if (!brand) { svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor'); svg.setAttribute('stroke-width', '1.4'); }
