@@ -10,7 +10,7 @@ test('missing or malformed theme preferences fall back to bounded defaults',()=>
   const prefs=settings({'data-uf-page-size':bad,'data-uf-client-refresh':bad,'data-uf-mode':bad,'data-uf-nav-expanded':bad});
   assert.equal(prefs.get('page_size'),'50');assert.equal(prefs.get('client_refresh'),'10');assert.equal(prefs.get('mode'),'auto');assert.equal(prefs.get('nav_expanded'),'0');
   assert.equal(settings({'data-uf-activity-always':bad}).get('activity_always'),'1');
-  assert.equal(settings({'data-uf-dashboard-refresh':bad}).get('dashboard_refresh'),'1');
+  assert.equal(settings({'data-uf-dashboard-refresh':bad}).get('dashboard_refresh'),'5');
  }
 });
 test('valid configured preferences survive the header adapter',()=>{

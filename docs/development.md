@@ -215,12 +215,12 @@ Upgrades preserve the active theme. Versions 1.0.1 and earlier have an installed
 | Appearance | System, light, dark | System |
 | Clients per page | 10, 25, 50, 100 | 50 |
 | Client refresh interval | 5, 10, 30, 60 seconds | 10 seconds |
-| Dashboard information refresh interval | 1, 2, 5, 10, 30, 60 seconds | 1 second |
+| Dashboard information refresh interval | 1, 2, 5, 10, 30, 60 seconds | 5 seconds |
 | Expand navigation by default | On, off | Off |
 | Always sample network activity | On, off | On |
 
 These preferences are stored in `/etc/config/unifi` and apply across browsers. Client column choices remain browser preferences. The login page uses its own fixed dark background.
 
-Network activity is sampled every second. The curve scrolls continuously and progressively reveals measured line segments with a one-second display buffer. Pausing updates, hiding the page, or enabling reduced motion stops the animation. **Always sample network activity** is enabled by default under System → Unifi Theme Settings and collects continuously, including while the web interface is closed. The collector retains the last hour per interface in process memory; opening or refreshing the dashboard restores that history, then reads new samples incrementally. No traffic history is written to flash. Disabling the option stops the collector and releases its history; router or collector restarts also clear it. With the option off, only the open dashboard collects samples. System information, interface status and DHCP leases use the dashboard information refresh interval, which defaults to one second.
+Network activity is sampled every second. The curve scrolls continuously and progressively reveals measured line segments with a one-second display buffer. Pausing updates, hiding the page, or enabling reduced motion stops the animation. **Always sample network activity** is enabled by default under System → Unifi Theme Settings and collects continuously, including while the web interface is closed. The collector retains the last hour per interface in process memory; opening or refreshing the dashboard restores that history, then reads new samples incrementally. No traffic history is written to flash. Disabling the option stops the collector and releases its history; router or collector restarts also clear it. With the option off, only the open dashboard collects samples. System information, interface status and DHCP leases use the dashboard information refresh interval, which defaults to five seconds; each refresh reloads LuCI's network state, so one second adds noticeable RPC load on small routers.
 
 Dashboard and client collection are read-only. The theme settings permission allows writes only to the `unifi` configuration; native LuCI configuration pages retain their existing write permissions.

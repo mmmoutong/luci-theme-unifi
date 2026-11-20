@@ -14,7 +14,7 @@
 	const mode = (prefs.mode == 'auto' || prefs.mode == 'light' || prefs.mode == 'dark') ? prefs.mode : 'auto';
 	const page_size = (prefs.page_size == '10' || prefs.page_size == '25' || prefs.page_size == '50' || prefs.page_size == '100') ? prefs.page_size : '50';
 	const client_refresh = (prefs.client_refresh == '5' || prefs.client_refresh == '10' || prefs.client_refresh == '30' || prefs.client_refresh == '60') ? prefs.client_refresh : '10';
-	const dashboard_refresh = (prefs.dashboard_refresh in ['1', '2', '5', '10', '30', '60']) ? prefs.dashboard_refresh : '1';
+	const dashboard_refresh = (prefs.dashboard_refresh in ['1', '2', '5', '10', '30', '60']) ? prefs.dashboard_refresh : '5';
 	const activity_always = (prefs.activity_always in ['0', '1']) ? prefs.activity_always : '1';
 
 	http.prepare_content('text/html; charset=UTF-8');
